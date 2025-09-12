@@ -6,7 +6,7 @@ import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import { contactService } from "@/services/api/contactService";
 import { companyService } from "@/services/api/companyService";
-
+import { activityService } from "@/services/api/activityService";
 const ContactDetail = () => {
 const { id } = useParams();
   const [contact, setContact] = useState(null);
@@ -76,7 +76,7 @@ const loadContact = async () => {
   return (
     <div>
       <Breadcrumbs items={breadcrumbs} />
-<ContactDetails contact={contact} linkedCompany={linkedCompany} />
+<ContactDetails contact={contact} linkedCompany={linkedCompany} contactId={parseInt(id)} />
     </div>
   );
 };

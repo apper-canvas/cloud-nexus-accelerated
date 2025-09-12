@@ -1,12 +1,67 @@
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import { toast } from "react-toastify";
+import ActivityTimeline from "@/components/organisms/ActivityTimeline";
+import ActivityForm from "@/components/organisms/ActivityForm";
+import { activityService } from "@/services/api/activityService";
 import ApperIcon from "@/components/ApperIcon";
-import Card from "@/components/atoms/Card";
+import Contacts from "@/components/pages/Contacts";
+import Companies from "@/components/pages/Companies";
 import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
 import Badge from "@/components/atoms/Badge";
 
-const CompanyDetails = ({ company }) => {
-  const companyInfo = [
+const CompanyDetails = ({ company, companyId }) => {
+  const [activities, setActivities] = useState([]);
+  const [showActivityForm, setShowActivityForm] = useState(false);
+
+  useEffect(() => {
+    if (companyId) {
+      loadActivities();
+    }
+  }, [companyId]);
+
+  const loadActivities = async () => {
+    try {
+      const companyActivities = await activityService.getByEntity('company', companyId);
+      setActivities(companyActivities);
+    } catch (error) {
+      console.error('Error loading activities:', error);
+    }
+  };
+
+  const handleCreateActivity = async (activityData) => {
+    try {
+      await activityService.create({
+        ...activityData,
+        companyId: companyId
+      });
+      toast.success('Activity logged successfully');
+      setShowActivityForm(false);
+      loadActivities();
+    } catch (error) {
+      toast.error('Failed to create activity');
+      console.error('Error creating activity:', error);
+    }
+  };
+
+  const handleDeleteActivity = async (activityId) => {
+    if (!confirm('Are you sure you want to delete this activity?')) {
+      return;
+    }
+
+    try {
+      await activityService.delete(activityId);
+      toast.success('Activity deleted successfully');
+      loadActivities();
+    } catch (error) {
+      toast.error('Failed to delete activity');
+      console.error('Error deleting activity:', error);
+    }
+  };
+
+const companyInfo = [
     {
       label: "Industry",
       value: company.industry,
@@ -44,49 +99,6 @@ const CompanyDetails = ({ company }) => {
       case "Partner": return "primary";
       case "Former Client": return "secondary";
       default: return "secondary";
-    }
-  };
-
-  const recentActivities = [
-    {
-      Id: 1,
-      type: "contact_added",
-      description: "New contact added to company",
-      timestamp: "2024-01-20T14:30:00Z"
-    },
-    {
-      Id: 2,
-      type: "meeting",
-      description: "Quarterly business review scheduled",
-      timestamp: "2024-01-18T09:15:00Z"
-    },
-    {
-      Id: 3,
-      type: "email",
-      description: "Follow-up email sent to decision makers",
-      timestamp: "2024-01-15T16:45:00Z"
-    }
-  ];
-
-  const getActivityIcon = (type) => {
-    switch (type) {
-      case "contact_added": return "UserPlus";
-      case "meeting": return "Calendar";
-      case "email": return "Mail";
-      case "call": return "Phone";
-      case "note": return "FileText";
-      default: return "Activity";
-    }
-  };
-
-  const getActivityColor = (type) => {
-    switch (type) {
-      case "contact_added": return "text-green-600";
-      case "meeting": return "text-blue-600";
-      case "email": return "text-purple-600";
-      case "call": return "text-orange-600";
-      case "note": return "text-gray-600";
-      default: return "text-gray-600";
     }
   };
 
@@ -220,41 +232,46 @@ const CompanyDetails = ({ company }) => {
           </Card>
         </div>
 
-        {/* Recent Activities Sidebar */}
+{/* Recent Activities Sidebar */}
         <div className="space-y-6">
           <Card className="p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
-              <ApperIcon name="Activity" className="h-5 w-5 text-primary" />
+              <Button
+                size="sm"
+                onClick={() => setShowActivityForm(true)}
+                className="flex items-center gap-2"
+              >
+                <ApperIcon name="Plus" className="h-4 w-4" />
+                Log Activity
+              </Button>
             </div>
             
-            <div className="space-y-4">
-              {recentActivities.map((activity) => (
-                <div key={activity.Id} className="flex items-start space-x-3">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${getActivityColor(activity.type)} bg-opacity-10`}>
-                    <ApperIcon 
-                      name={getActivityIcon(activity.type)} 
-                      className={`h-4 w-4 ${getActivityColor(activity.type)}`} 
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-900">{activity.description}</p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {format(new Date(activity.timestamp), "MMM dd, yyyy 'at' h:mm a")}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ActivityTimeline
+              activities={activities}
+              onDeleteActivity={handleDeleteActivity}
+              showEntityLinks={false}
+            />
 
             <div className="mt-6 pt-4 border-t border-gray-200">
-              <Button variant="ghost" className="w-full">
-                <ApperIcon name="History" className="h-4 w-4 mr-2" />
-                View All Activity
-              </Button>
+              <Link to="/activities">
+                <Button variant="ghost" className="w-full">
+                  <ApperIcon name="History" className="h-4 w-4 mr-2" />
+                  View All Activity
+                </Button>
+              </Link>
             </div>
           </Card>
 
+{/* Activity Form Modal */}
+        {showActivityForm && (
+          <ActivityForm
+            isOpen={showActivityForm}
+            onClose={() => setShowActivityForm(false)}
+            onSubmit={handleCreateActivity}
+            preSelectedEntity={{ type: 'company', id: companyId }}
+          />
+        )}
           {/* Quick Stats */}
           <Card className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h3>

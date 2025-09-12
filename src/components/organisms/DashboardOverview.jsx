@@ -1,12 +1,29 @@
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import ActivityTimeline from "@/components/organisms/ActivityTimeline";
+import { activityService } from "@/services/api/activityService";
 import ApperIcon from "@/components/ApperIcon";
-import Card from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
+import Leads from "@/components/pages/Leads";
 import MetricCard from "@/components/molecules/MetricCard";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
+import Badge from "@/components/atoms/Badge";
+const DashboardOverview = ({ metrics, quickActions }) => {
+  const [recentActivities, setRecentActivities] = useState([]);
 
-const DashboardOverview = ({ metrics, recentActivities, quickActions }) => {
+  useEffect(() => {
+    loadRecentActivities();
+  }, []);
+
+  const loadRecentActivities = async () => {
+    try {
+      const activities = await activityService.getRecentActivities(5);
+      setRecentActivities(activities);
+    } catch (error) {
+      console.error('Error loading recent activities:', error);
+    }
+  };
   return (
     <div className="space-y-6">
       {/* Key Metrics */}
@@ -71,7 +88,7 @@ const DashboardOverview = ({ metrics, recentActivities, quickActions }) => {
         </Card>
 
         {/* Recent Activities */}
-        <Card className="p-6">
+<Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">Recent Activities</h2>
             <Link to="/activities">
@@ -82,28 +99,11 @@ const DashboardOverview = ({ metrics, recentActivities, quickActions }) => {
             </Link>
           </div>
           
-          <div className="space-y-4">
-            {recentActivities.slice(0, 5).map((activity) => (
-              <div key={activity.id} className="flex items-start">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
-                  <ApperIcon name={activity.icon} className="h-4 w-4 text-gray-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {activity.description}
-                    </p>
-                    <Badge variant={activity.type === "contact" ? "info" : "default"}>
-                      {activity.type}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {format(new Date(activity.createdAt), "MMM d, h:mm a")}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+<ActivityTimeline
+            activities={recentActivities}
+            showEntityLinks={true}
+            limit={5}
+          />
 
           {recentActivities.length === 0 && (
             <div className="text-center py-8">

@@ -22,11 +22,12 @@ class CompanyService {
 
   async create(companyData) {
     await this.delay();
-    const newCompany = {
+const newCompany = {
       ...companyData,
       Id: Math.max(...this.companies.map(c => c.Id), 0) + 1,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      lastContactDate: null
     };
     this.companies.push(newCompany);
     return { ...newCompany };
@@ -39,7 +40,7 @@ class CompanyService {
       throw new Error("Company not found");
     }
     
-    const updatedCompany = {
+const updatedCompany = {
       ...this.companies[index],
       ...companyData,
       Id: id,

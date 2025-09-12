@@ -21,9 +21,10 @@ class ContactService {
     const highestId = Math.max(...this.contacts.map(c => c.Id), 0);
     const newContact = {
       Id: highestId + 1,
-      ...contactData,
+...contactData,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      lastContactDate: null
     };
     this.contacts.push(newContact);
     return { ...newContact };
@@ -36,13 +37,12 @@ class ContactService {
       throw new Error("Contact not found");
     }
     
-    this.contacts[index] = {
+this.contacts[index] = {
       ...this.contacts[index],
       ...contactData,
       Id: id,
       updatedAt: new Date().toISOString()
     };
-    
     return { ...this.contacts[index] };
   }
 

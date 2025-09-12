@@ -1,18 +1,22 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
-import ApperIcon from "@/components/ApperIcon";
-import Card from "@/components/atoms/Card";
-import Badge from "@/components/atoms/Badge";
-import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
-import Label from "@/components/atoms/Label";
-import Loading from "@/components/ui/Loading";
+import ActivityTimeline from "@/components/organisms/ActivityTimeline";
+import ActivityForm from "@/components/organisms/ActivityForm";
 import { dealService } from "@/services/api/dealService";
 import { companyService } from "@/services/api/companyService";
 import { contactService } from "@/services/api/contactService";
+import { activityService } from "@/services/api/activityService";
 import { cn } from "@/utils/cn";
+import ApperIcon from "@/components/ApperIcon";
+import Contacts from "@/components/pages/Contacts";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import Card from "@/components/atoms/Card";
+import Badge from "@/components/atoms/Badge";
+import Label from "@/components/atoms/Label";
+import Loading from "@/components/ui/Loading";
 
 const DealDetailModal = ({ dealId, isOpen, onClose }) => {
   const navigate = useNavigate();
@@ -20,17 +24,20 @@ const DealDetailModal = ({ dealId, isOpen, onClose }) => {
   const [company, setCompany] = useState(null);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
+const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editData, setEditData] = useState({});
+  const [activities, setActivities] = useState([]);
+  const [showActivityForm, setShowActivityForm] = useState(false);
 
   useEffect(() => {
     if (isOpen && dealId) {
       loadDealData();
+      loadActivities();
     }
   }, [isOpen, dealId]);
 
-  const loadDealData = async () => {
+const loadDealData = async () => {
     try {
       setLoading(true);
       const dealData = await dealService.getById(parseInt(dealId));
@@ -59,6 +66,45 @@ const DealDetailModal = ({ dealId, isOpen, onClose }) => {
       console.error("Error loading deal:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadActivities = async () => {
+    try {
+      const dealActivities = await activityService.getByEntity('deal', dealId);
+      setActivities(dealActivities);
+    } catch (error) {
+      console.error("Error loading activities:", error);
+    }
+  };
+
+  const handleCreateActivity = async (activityData) => {
+    try {
+      await activityService.create({
+        ...activityData,
+        dealId: parseInt(dealId)
+      });
+      toast.success('Activity logged successfully');
+      setShowActivityForm(false);
+      loadActivities();
+    } catch (error) {
+      toast.error('Failed to create activity');
+      console.error('Error creating activity:', error);
+    }
+  };
+
+  const handleDeleteActivity = async (activityId) => {
+    if (!confirm('Are you sure you want to delete this activity?')) {
+      return;
+    }
+
+    try {
+      await activityService.delete(activityId);
+      toast.success('Activity deleted successfully');
+      loadActivities();
+    } catch (error) {
+      toast.error('Failed to delete activity');
+      console.error('Error deleting activity:', error);
     }
   };
 
@@ -110,35 +156,8 @@ const DealDetailModal = ({ dealId, isOpen, onClose }) => {
       'Closed': 'success'
     };
     return colors[stage] || 'secondary';
+return colors[stage] || 'secondary';
   };
-
-  // Mock activity timeline data
-  const mockActivities = [
-    {
-      id: 1,
-      type: 'note',
-      title: 'Initial discovery call completed',
-      description: 'Discussed requirements and budget parameters',
-      date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      user: 'Sarah Johnson'
-    },
-    {
-      id: 2,
-      type: 'email',
-      title: 'Proposal sent',
-      description: 'Detailed proposal with pricing breakdown',
-      date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-      user: 'Sarah Johnson'
-    },
-    {
-      id: 3,
-      type: 'call',
-      title: 'Follow-up call scheduled',
-      description: 'Next steps discussion planned for Friday',
-      date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      user: 'Sarah Johnson'
-    }
-  ];
 
   // Mock progression history
   const mockProgression = [
@@ -165,14 +184,6 @@ const DealDetailModal = ({ dealId, isOpen, onClose }) => {
     }
   ];
 
-  const getActivityIcon = (type) => {
-    switch (type) {
-      case 'note': return 'FileText';
-      case 'email': return 'Mail';
-      case 'call': return 'Phone';
-      case 'meeting': return 'Calendar';
-      default: return 'Activity';
-    }
   };
 
   if (!isOpen) return null;
@@ -371,33 +382,24 @@ const DealDetailModal = ({ dealId, isOpen, onClose }) => {
                     </div>
                   </Card>
 
-                  {/* Activity Timeline */}
+{/* Activity Timeline */}
                   <Card className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Activity Timeline</h3>
-                    <div className="space-y-4">
-                      {mockActivities.map(activity => (
-                        <div key={activity.id} className="flex gap-3">
-                          <div className="flex-shrink-0 w-8 h-8 bg-primary bg-opacity-10 rounded-full flex items-center justify-center">
-                            <ApperIcon name={getActivityIcon(activity.type)} className="h-4 w-4 text-primary" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <p className="font-medium text-gray-900">{activity.title}</p>
-                              <p className="text-xs text-gray-500">
-                                {format(activity.date, 'MMM dd, yyyy')}
-                              </p>
-                            </div>
-                            <p className="text-sm text-gray-600 mt-1">{activity.description}</p>
-                            <p className="text-xs text-gray-500 mt-1">by {activity.user}</p>
-                          </div>
-                        </div>
-                      ))}
-                      <div className="text-center py-4">
-                        <p className="text-sm text-gray-500 italic">
-                          Activity tracking will be available with full CRM integration
-                        </p>
-                      </div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Activity Timeline</h3>
+                      <Button
+                        size="sm"
+                        onClick={() => setShowActivityForm(true)}
+                        className="flex items-center gap-2"
+                      >
+                        <ApperIcon name="Plus" className="h-4 w-4" />
+                        Log Activity
+                      </Button>
                     </div>
+                    <ActivityTimeline
+                      activities={activities}
+                      onDeleteActivity={handleDeleteActivity}
+                      showEntityLinks={false}
+                    />
                   </Card>
 
                   {/* Deal Progression History */}

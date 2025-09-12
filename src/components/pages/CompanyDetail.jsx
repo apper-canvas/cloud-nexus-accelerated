@@ -5,14 +5,14 @@ import CompanyDetails from "@/components/organisms/CompanyDetails";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import { companyService } from "@/services/api/companyService";
-
+import { activityService } from "@/services/api/activityService";
 const CompanyDetail = () => {
   const { id } = useParams();
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const loadCompany = async () => {
+const loadCompany = async () => {
     try {
       setError("");
       setLoading(true);
@@ -61,7 +61,7 @@ const CompanyDetail = () => {
   return (
     <div>
       <Breadcrumbs items={breadcrumbs} />
-      <CompanyDetails company={company} />
+<CompanyDetails company={company} companyId={parseInt(id)} />
     </div>
   );
 };

@@ -1,11 +1,63 @@
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
-import React from "react";
+import { toast } from "react-toastify";
+import ActivityTimeline from "@/components/organisms/ActivityTimeline";
+import ActivityForm from "@/components/organisms/ActivityForm";
+import { activityService } from "@/services/api/activityService";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import Card from "@/components/atoms/Card";
 import Badge from "@/components/atoms/Badge";
-const ContactDetails = ({ contact, linkedCompany }) => {
+
+const ContactDetails = ({ contact, linkedCompany, contactId }) => {
+  const [activities, setActivities] = useState([]);
+  const [showActivityForm, setShowActivityForm] = useState(false);
+
+  useEffect(() => {
+    if (contactId) {
+      loadActivities();
+    }
+  }, [contactId]);
+
+  const loadActivities = async () => {
+    try {
+      const contactActivities = await activityService.getByEntity('contact', contactId);
+      setActivities(contactActivities);
+    } catch (error) {
+      console.error('Error loading activities:', error);
+    }
+  };
+
+  const handleCreateActivity = async (activityData) => {
+    try {
+      await activityService.create({
+        ...activityData,
+        contactId: contactId
+      });
+      toast.success('Activity logged successfully');
+      setShowActivityForm(false);
+      loadActivities();
+    } catch (error) {
+      toast.error('Failed to create activity');
+      console.error('Error creating activity:', error);
+    }
+  };
+
+  const handleDeleteActivity = async (activityId) => {
+    if (!confirm('Are you sure you want to delete this activity?')) {
+      return;
+    }
+
+    try {
+      await activityService.delete(activityId);
+      toast.success('Activity deleted successfully');
+      loadActivities();
+    } catch (error) {
+      toast.error('Failed to delete activity');
+      console.error('Error deleting activity:', error);
+    }
+  };
   if (!contact) return null;
 
   const contactInfo = [
@@ -35,52 +87,9 @@ const ContactDetails = ({ contact, linkedCompany }) => {
     {
       label: "Address",
       value: contact.address,
-      icon: "MapPin"
+icon: "MapPin"
     }
   ];
-
-  const mockActivities = [
-    {
-      id: 1,
-      type: "email",
-      description: "Sent welcome email",
-      date: new Date(2024, 0, 15),
-      completed: true
-    },
-    {
-      id: 2,
-      type: "call",
-      description: "Follow-up call scheduled",
-      date: new Date(2024, 0, 10),
-      completed: false
-    },
-    {
-      id: 3,
-      type: "meeting",
-      description: "Initial consultation meeting",
-      date: new Date(2024, 0, 5),
-      completed: true
-    }
-  ];
-
-  const getActivityIcon = (type) => {
-    switch (type) {
-      case "email": return "Mail";
-      case "call": return "Phone";
-      case "meeting": return "Calendar";
-      default: return "Activity";
-    }
-  };
-
-  const getActivityColor = (type) => {
-    switch (type) {
-      case "email": return "info";
-      case "call": return "success";
-      case "meeting": return "warning";
-      default: return "default";
-    }
-  };
-
   return (
     <div className="space-y-6">
       {/* Contact Header */}
@@ -169,45 +178,27 @@ const ContactDetails = ({ contact, linkedCompany }) => {
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">Recent Activities</h2>
-            <Button variant="outline" size="sm">
+<Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setShowActivityForm(true)}
+            >
               <ApperIcon name="Plus" className="h-4 w-4 mr-1" />
               Add Activity
             </Button>
           </div>
           
-          <div className="space-y-4">
-            {mockActivities.map((activity) => (
-              <div key={activity.id} className="flex items-start">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 ${
-                  activity.completed ? 'bg-green-100' : 'bg-gray-100'
-                }`}>
-                  <ApperIcon 
-                    name={getActivityIcon(activity.type)} 
-                    className={`h-4 w-4 ${
-                      activity.completed ? 'text-green-600' : 'text-gray-600'
-                    }`} 
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-gray-900">
-                      {activity.description}
-                    </p>
-                    <Badge variant={getActivityColor(activity.type)}>
-                      {activity.type}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {format(activity.date, "MMM d, yyyy 'at' h:mm a")}
-                  </p>
-                </div>
-              </div>
-            ))}
+<ActivityTimeline
+            activities={activities}
+            onDeleteActivity={handleDeleteActivity}
+            showEntityLinks={false}
+          />
           </div>
 
-          <div className="mt-6 text-center">
-            <Button variant="outline" className="w-full">
-              View All Activities
+<div className="mt-6 text-center">
+            <Link to="/activities">
+              <Button variant="outline" className="w-full">
+                View All Activities
             </Button>
           </div>
         </Card>

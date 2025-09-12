@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import DealDetailModal from "@/components/organisms/DealDetailModal";
-
+import { activityService } from "@/services/api/activityService";
 const DealDetail = () => {
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(true);
@@ -12,7 +12,7 @@ const DealDetail = () => {
   };
 
   return (
-    <DealDetailModal
+<DealDetailModal
       dealId={id}
       isOpen={isModalOpen}
       onClose={handleClose}

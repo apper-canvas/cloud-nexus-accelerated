@@ -60,9 +60,10 @@ async create(dealData) {
       stage: dealData.stage || 'Prospecting',
       probability: dealData.probability || 20,
       assignedRep: dealData.assignedRep,
-      description: dealData.description || '',
+description: dealData.description || '',
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      lastContactDate: null
     };
     this.deals.push(newDeal);
     return { ...newDeal };
@@ -78,7 +79,7 @@ async create(dealData) {
 this.deals[index] = {
       ...this.deals[index],
       ...dealData,
-      Id: id,
+Id: id,
       updatedAt: new Date().toISOString()
     };
     
@@ -116,7 +117,7 @@ this.deals[index] = {
       ...this.deals[index],
       stage: newStage,
       probability: probability,
-      updatedAt: new Date().toISOString()
+updatedAt: new Date().toISOString()
     };
 
     return { ...this.deals[index] };

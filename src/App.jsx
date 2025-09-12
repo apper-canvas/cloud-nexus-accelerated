@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
+import Activities from '@/components/pages/Activities'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import DealPipeline from "@/components/pages/DealPipeline";
@@ -113,18 +114,10 @@ element={<DealPipeline />}
                       />
                     } 
                   />
-                  <Route 
+<Route 
                     path="/activities" 
                     element={
-                      <ComingSoon 
-                        title="Activities & Tasks"
-                        description="Log communications and schedule follow-ups."
-                        icon="Calendar"
-                        breadcrumbs={[
-                          { label: "Dashboard", href: "/" },
-                          { label: "Activities" }
-                        ]}
-                      />
+                      <Activities />
                     } 
                   />
                   <Route 
