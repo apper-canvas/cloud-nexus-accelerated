@@ -1,20 +1,21 @@
-import { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import Sidebar from "@/components/organisms/Sidebar";
-import Header from "@/components/organisms/Header";
-
-// Pages
-import Dashboard from "@/components/pages/Dashboard";
-import Contacts from "@/components/pages/Contacts";
+import DealPipeline from "@/components/pages/DealPipeline";
 import ContactDetail from "@/components/pages/ContactDetail";
-import AddContact from "@/components/pages/AddContact";
-import EditContact from "@/components/pages/EditContact";
+import EditCompany from "@/components/pages/EditCompany";
+import Contacts from "@/components/pages/Contacts";
 import ComingSoon from "@/components/pages/ComingSoon";
 import Companies from "@/components/pages/Companies";
+import EditContact from "@/components/pages/EditContact";
 import CompanyDetail from "@/components/pages/CompanyDetail";
+import AddContact from "@/components/pages/AddContact";
 import AddCompany from "@/components/pages/AddCompany";
-import EditCompany from "@/components/pages/EditCompany";
+import Dashboard from "@/components/pages/Dashboard";
+import Header from "@/components/organisms/Header";
+import Sidebar from "@/components/organisms/Sidebar";
+
+// Pages
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -78,21 +79,11 @@ path="/companies"
                       />
                     } 
                   />
-                  <Route 
+<Route 
                     path="/deals" 
-                    element={
-                      <ComingSoon 
-                        title="Deal Pipeline"
-                        description="Visualize and manage your sales opportunities."
-                        icon="TrendingUp"
-                        breadcrumbs={[
-                          { label: "Dashboard", href: "/" },
-                          { label: "Deals" }
-                        ]}
-                      />
-                    } 
+                    element={<DealPipeline />}
                   />
-                  <Route 
+                  <Route
                     path="/invoices" 
                     element={
                       <ComingSoon 
