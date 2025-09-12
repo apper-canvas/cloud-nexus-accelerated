@@ -1,72 +1,225 @@
-import companiesData from "@/services/mockData/companies.json";
-
 class CompanyService {
   constructor() {
-    this.companies = [...companiesData];
+    this.tableName = 'company_c';
+    this.apperClient = null;
+    this.initializeClient();
   }
 
-  async delay(ms = 300) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  initializeClient() {
+    if (typeof window !== 'undefined' && window.ApperSDK) {
+      const { ApperClient } = window.ApperSDK;
+      this.apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+    }
   }
 
   async getAll() {
-    await this.delay();
-    return [...this.companies];
+    try {
+      if (!this.apperClient) this.initializeClient();
+      
+      const params = {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "Tags"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "industry_c"}},
+          {"field": {"Name": "size_c"}},
+          {"field": {"Name": "location_c"}},
+          {"field": {"Name": "website_c"}},
+          {"field": {"Name": "relationship_stage_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "contact_count_c"}},
+          {"field": {"Name": "created_at_c"}},
+          {"field": {"Name": "updated_at_c"}},
+          {"field": {"Name": "last_contact_date_c"}}
+        ],
+        orderBy: [{"fieldName": "Id", "sorttype": "DESC"}],
+        pagingInfo: {"limit": 100, "offset": 0}
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(`Failed to fetch companies: ${response.message}`);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+      throw error;
+    }
   }
 
   async getById(id) {
-    await this.delay();
-    const company = this.companies.find(c => c.Id === id);
-    return company ? { ...company } : null;
+    try {
+      if (!this.apperClient) this.initializeClient();
+
+      const params = {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "Tags"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "industry_c"}},
+          {"field": {"Name": "size_c"}},
+          {"field": {"Name": "location_c"}},
+          {"field": {"Name": "website_c"}},
+          {"field": {"Name": "relationship_stage_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "contact_count_c"}},
+          {"field": {"Name": "created_at_c"}},
+          {"field": {"Name": "updated_at_c"}},
+          {"field": {"Name": "last_contact_date_c"}}
+        ]
+      };
+
+      const response = await this.apperClient.getRecordById(this.tableName, id, params);
+      
+      if (!response.success) {
+        console.error(`Failed to fetch company: ${response.message}`);
+        return null;
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching company by ID:", error);
+      return null;
+    }
   }
 
   async create(companyData) {
-    await this.delay();
-const newCompany = {
-      ...companyData,
-      Id: Math.max(...this.companies.map(c => c.Id), 0) + 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      lastContactDate: null
-    };
-    this.companies.push(newCompany);
-    return { ...newCompany };
+    try {
+      if (!this.apperClient) this.initializeClient();
+
+      const params = {
+        records: [{
+          Name: companyData.name_c || companyData.name,
+          Tags: companyData.Tags || "",
+          name_c: companyData.name_c || companyData.name,
+          industry_c: companyData.industry_c || companyData.industry,
+          size_c: companyData.size_c || companyData.size,
+          location_c: companyData.location_c || companyData.location,
+          website_c: companyData.website_c || companyData.website,
+          relationship_stage_c: companyData.relationship_stage_c || companyData.relationshipStage,
+          description_c: companyData.description_c || companyData.description,
+          contact_count_c: companyData.contact_count_c || 0,
+          created_at_c: new Date().toISOString(),
+          updated_at_c: new Date().toISOString()
+        }]
+      };
+
+      const response = await this.apperClient.createRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(`Failed to create company: ${response.message}`);
+        throw new Error(response.message);
+      }
+
+      if (response.results && response.results.length > 0) {
+        const result = response.results[0];
+        if (result.success) {
+          return result.data;
+        } else {
+          throw new Error(result.message || "Failed to create company");
+        }
+      }
+
+      throw new Error("No response data received");
+    } catch (error) {
+      console.error("Error creating company:", error);
+      throw error;
+    }
   }
 
   async update(id, companyData) {
-    await this.delay();
-    const index = this.companies.findIndex(c => c.Id === id);
-    if (index === -1) {
-      throw new Error("Company not found");
+    try {
+      if (!this.apperClient) this.initializeClient();
+
+      const params = {
+        records: [{
+          Id: id,
+          Name: companyData.name_c || companyData.name,
+          Tags: companyData.Tags || "",
+          name_c: companyData.name_c || companyData.name,
+          industry_c: companyData.industry_c || companyData.industry,
+          size_c: companyData.size_c || companyData.size,
+          location_c: companyData.location_c || companyData.location,
+          website_c: companyData.website_c || companyData.website,
+          relationship_stage_c: companyData.relationship_stage_c || companyData.relationshipStage,
+          description_c: companyData.description_c || companyData.description,
+          updated_at_c: new Date().toISOString()
+        }]
+      };
+
+      const response = await this.apperClient.updateRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(`Failed to update company: ${response.message}`);
+        throw new Error(response.message);
+      }
+
+      if (response.results && response.results.length > 0) {
+        const result = response.results[0];
+        if (result.success) {
+          return result.data;
+        } else {
+          throw new Error(result.message || "Failed to update company");
+        }
+      }
+
+      throw new Error("No response data received");
+    } catch (error) {
+      console.error("Error updating company:", error);
+      throw error;
     }
-    
-const updatedCompany = {
-      ...this.companies[index],
-      ...companyData,
-      Id: id,
-      updatedAt: new Date().toISOString()
-    };
-    
-    this.companies[index] = updatedCompany;
-    return { ...updatedCompany };
   }
 
   async delete(id) {
-    await this.delay();
-    const index = this.companies.findIndex(c => c.Id === id);
-    if (index === -1) {
-      throw new Error("Company not found");
+    try {
+      if (!this.apperClient) this.initializeClient();
+
+      const params = { 
+        RecordIds: [id] 
+      };
+
+      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(`Failed to delete company: ${response.message}`);
+        throw new Error(response.message);
+      }
+
+      if (response.results && response.results.length > 0) {
+        const result = response.results[0];
+        if (result.success) {
+          return true;
+        } else {
+          throw new Error(result.message || "Failed to delete company");
+        }
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error deleting company:", error);
+      throw error;
     }
-    this.companies.splice(index, 1);
-    return true;
   }
 
   async getCompanyOptions() {
-    await this.delay();
-    return this.companies.map(company => ({
-      value: company.Id,
-      label: company.name
-    }));
+    try {
+      const companies = await this.getAll();
+      return companies.map(company => ({
+        value: company.Id,
+        label: company.name_c || company.Name || company.name
+      }));
+    } catch (error) {
+      console.error("Error getting company options:", error);
+      return [];
+    }
   }
 }
 

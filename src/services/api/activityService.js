@@ -1,154 +1,314 @@
-import activitiesData from '@/services/mockData/activities.json';
-
 class ActivityService {
   constructor() {
-    this.activities = [...activitiesData];
+    this.tableName = 'activity_c';
+    this.apperClient = null;
+    this.initializeClient();
   }
 
-  async delay(ms = 300) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  initializeClient() {
+    if (typeof window !== 'undefined' && window.ApperSDK) {
+      const { ApperClient } = window.ApperSDK;
+      this.apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+    }
   }
 
   async getAll(filters = {}) {
-    await this.delay();
-    let filtered = [...this.activities];
+    try {
+      if (!this.apperClient) this.initializeClient();
+      
+      const params = {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "Tags"}},
+          {"field": {"Name": "type_c"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "outcome_c"}},
+          {"field": {"Name": "date_c"}},
+          {"field": {"Name": "duration_c"}},
+          {"field": {"Name": "contact_id_c"}},
+          {"field": {"Name": "company_id_c"}},
+          {"field": {"Name": "deal_id_c"}},
+          {"field": {"Name": "user_id_c"}},
+          {"field": {"Name": "user_name_c"}},
+          {"field": {"Name": "created_at_c"}},
+          {"field": {"Name": "updated_at_c"}}
+        ],
+        where: [],
+        orderBy: [{"fieldName": "date_c", "sorttype": "DESC"}],
+        pagingInfo: {"limit": 100, "offset": 0}
+      };
 
-    if (filters.entityType && filters.entityId) {
-      const entityIdField = `${filters.entityType}Id`;
-      filtered = filtered.filter(activity => activity[entityIdField] === parseInt(filters.entityId));
+      // Apply filters
+      if (filters.entityType && filters.entityId) {
+        const entityIdField = `${filters.entityType}_id_c`;
+        params.where.push({
+          "FieldName": entityIdField,
+          "Operator": "EqualTo", 
+          "Values": [parseInt(filters.entityId)]
+        });
+      }
+
+      if (filters.type) {
+        params.where.push({
+          "FieldName": "type_c",
+          "Operator": "EqualTo",
+          "Values": [filters.type]
+        });
+      }
+
+      if (filters.startDate) {
+        params.where.push({
+          "FieldName": "date_c",
+          "Operator": "GreaterThanOrEqualTo",
+          "Values": [filters.startDate]
+        });
+      }
+
+      if (filters.endDate) {
+        params.where.push({
+          "FieldName": "date_c",
+          "Operator": "LessThanOrEqualTo",
+          "Values": [filters.endDate]
+        });
+      }
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(`Failed to fetch activities: ${response.message}`);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching activities:", error);
+      throw error;
     }
-
-    if (filters.type) {
-      filtered = filtered.filter(activity => activity.type === filters.type);
-    }
-
-    if (filters.startDate) {
-      filtered = filtered.filter(activity => new Date(activity.date) >= new Date(filters.startDate));
-    }
-
-    if (filters.endDate) {
-      filtered = filtered.filter(activity => new Date(activity.date) <= new Date(filters.endDate));
-    }
-
-    return filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
   }
 
   async getById(id) {
-    await this.delay();
-    return this.activities.find(activity => activity.Id === parseInt(id)) || null;
+    try {
+      if (!this.apperClient) this.initializeClient();
+
+      const params = {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "Tags"}},
+          {"field": {"Name": "type_c"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "outcome_c"}},
+          {"field": {"Name": "date_c"}},
+          {"field": {"Name": "duration_c"}},
+          {"field": {"Name": "contact_id_c"}},
+          {"field": {"Name": "company_id_c"}},
+          {"field": {"Name": "deal_id_c"}},
+          {"field": {"Name": "user_id_c"}},
+          {"field": {"Name": "user_name_c"}},
+          {"field": {"Name": "created_at_c"}},
+          {"field": {"Name": "updated_at_c"}}
+        ]
+      };
+
+      const response = await this.apperClient.getRecordById(this.tableName, id, params);
+      
+      if (!response.success) {
+        console.error(`Failed to fetch activity: ${response.message}`);
+        return null;
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching activity by ID:", error);
+      return null;
+    }
   }
 
   async getByEntity(entityType, entityId) {
-    await this.delay();
-    const entityIdField = `${entityType}Id`;
-    return this.activities
-      .filter(activity => activity[entityIdField] === parseInt(entityId))
-      .sort((a, b) => new Date(b.date) - new Date(a.date));
+    try {
+      const filters = {
+        entityType,
+        entityId: parseInt(entityId)
+      };
+      return await this.getAll(filters);
+    } catch (error) {
+      console.error("Error fetching activities by entity:", error);
+      throw error;
+    }
   }
 
   async create(activityData) {
-    await this.delay();
-    const newActivity = {
-      ...activityData,
-      Id: Math.max(...this.activities.map(a => a.Id), 0) + 1,
-      date: activityData.date || new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    this.activities.push(newActivity);
+    try {
+      if (!this.apperClient) this.initializeClient();
 
-    // Update last contact date on related entities
-    await this.updateEntityLastContact(newActivity);
-    
-    return newActivity;
+      const params = {
+        records: [{
+          Name: activityData.title_c || activityData.title,
+          Tags: activityData.Tags || "",
+          type_c: activityData.type_c || activityData.type,
+          title_c: activityData.title_c || activityData.title,
+          description_c: activityData.description_c || activityData.description,
+          outcome_c: activityData.outcome_c || activityData.outcome,
+          date_c: activityData.date_c || activityData.date || new Date().toISOString(),
+          duration_c: activityData.duration_c || activityData.duration,
+          contact_id_c: activityData.contact_id_c || activityData.contactId,
+          company_id_c: activityData.company_id_c || activityData.companyId,
+          deal_id_c: activityData.deal_id_c || activityData.dealId,
+          user_id_c: activityData.user_id_c || activityData.userId,
+          user_name_c: activityData.user_name_c || activityData.userName,
+          created_at_c: new Date().toISOString(),
+          updated_at_c: new Date().toISOString()
+        }]
+      };
+
+      const response = await this.apperClient.createRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(`Failed to create activity: ${response.message}`);
+        throw new Error(response.message);
+      }
+
+      if (response.results && response.results.length > 0) {
+        const result = response.results[0];
+        if (result.success) {
+          return result.data;
+        } else {
+          throw new Error(result.message || "Failed to create activity");
+        }
+      }
+
+      throw new Error("No response data received");
+    } catch (error) {
+      console.error("Error creating activity:", error);
+      throw error;
+    }
   }
 
   async update(id, activityData) {
-    await this.delay();
-    const index = this.activities.findIndex(activity => activity.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error('Activity not found');
-    }
+    try {
+      if (!this.apperClient) this.initializeClient();
 
-    this.activities[index] = {
-      ...this.activities[index],
-      ...activityData,
-      Id: parseInt(id),
-      updatedAt: new Date().toISOString()
-    };
-    
-    return this.activities[index];
+      const params = {
+        records: [{
+          Id: id,
+          Name: activityData.title_c || activityData.title,
+          Tags: activityData.Tags || "",
+          type_c: activityData.type_c || activityData.type,
+          title_c: activityData.title_c || activityData.title,
+          description_c: activityData.description_c || activityData.description,
+          outcome_c: activityData.outcome_c || activityData.outcome,
+          date_c: activityData.date_c || activityData.date,
+          duration_c: activityData.duration_c || activityData.duration,
+          contact_id_c: activityData.contact_id_c || activityData.contactId,
+          company_id_c: activityData.company_id_c || activityData.companyId,
+          deal_id_c: activityData.deal_id_c || activityData.dealId,
+          user_id_c: activityData.user_id_c || activityData.userId,
+          user_name_c: activityData.user_name_c || activityData.userName,
+          updated_at_c: new Date().toISOString()
+        }]
+      };
+
+      const response = await this.apperClient.updateRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(`Failed to update activity: ${response.message}`);
+        throw new Error(response.message);
+      }
+
+      if (response.results && response.results.length > 0) {
+        const result = response.results[0];
+        if (result.success) {
+          return result.data;
+        } else {
+          throw new Error(result.message || "Failed to update activity");
+        }
+      }
+
+      throw new Error("No response data received");
+    } catch (error) {
+      console.error("Error updating activity:", error);
+      throw error;
+    }
   }
 
   async delete(id) {
-    await this.delay();
-    const index = this.activities.findIndex(activity => activity.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error('Activity not found');
-    }
-    
-    const deleted = this.activities.splice(index, 1)[0];
-    return deleted;
-  }
+    try {
+      if (!this.apperClient) this.initializeClient();
 
-  async updateEntityLastContact(activity) {
-    const now = new Date().toISOString();
-    
-    // Update contact last contact date
-    if (activity.contactId) {
-      const { contactService } = await import('@/services/api/contactService');
-      const contact = await contactService.getById(activity.contactId);
-      if (contact) {
-        await contactService.update(activity.contactId, { lastContactDate: now });
-      }
-    }
+      const params = { 
+        RecordIds: [id] 
+      };
 
-    // Update company last contact date  
-    if (activity.companyId) {
-      const { companyService } = await import('@/services/api/companyService');
-      const company = await companyService.getById(activity.companyId);
-      if (company) {
-        await companyService.update(activity.companyId, { lastContactDate: now });
+      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      
+      if (!response.success) {
+        console.error(`Failed to delete activity: ${response.message}`);
+        throw new Error(response.message);
       }
-    }
 
-    // Update deal last contact date
-    if (activity.dealId) {
-      const { dealService } = await import('@/services/api/dealService');
-      const deal = await dealService.getById(activity.dealId);
-      if (deal) {
-        await dealService.update(activity.dealId, { lastContactDate: now });
+      if (response.results && response.results.length > 0) {
+        const result = response.results[0];
+        if (result.success) {
+          return true;
+        } else {
+          throw new Error(result.message || "Failed to delete activity");
+        }
       }
+
+      return true;
+    } catch (error) {
+      console.error("Error deleting activity:", error);
+      throw error;
     }
   }
 
   async getRecentActivities(limit = 5) {
-    await this.delay();
-    return this.activities
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, limit);
+    try {
+      const activities = await this.getAll();
+      return activities.slice(0, limit);
+    } catch (error) {
+      console.error("Error fetching recent activities:", error);
+      return [];
+    }
   }
 
   async getActivityStats() {
-    await this.delay();
-    const today = new Date();
-    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+    try {
+      const activities = await this.getAll();
+      const today = new Date();
+      const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-    const thisWeek = this.activities.filter(a => new Date(a.date) >= weekAgo).length;
-    const thisMonth = this.activities.filter(a => new Date(a.date) >= monthAgo).length;
-    
-    const byType = this.activities.reduce((acc, activity) => {
-      acc[activity.type] = (acc[activity.type] || 0) + 1;
-      return acc;
-    }, {});
+      const thisWeek = activities.filter(a => new Date(a.date_c) >= weekAgo).length;
+      const thisMonth = activities.filter(a => new Date(a.date_c) >= monthAgo).length;
+      
+      const byType = activities.reduce((acc, activity) => {
+        const type = activity.type_c || activity.type;
+        acc[type] = (acc[type] || 0) + 1;
+        return acc;
+      }, {});
 
-    return {
-      total: this.activities.length,
-      thisWeek,
-      thisMonth,
-      byType
-    };
+      return {
+        total: activities.length,
+        thisWeek,
+        thisMonth,
+        byType
+      };
+    } catch (error) {
+      console.error("Error fetching activity stats:", error);
+      return {
+        total: 0,
+        thisWeek: 0,
+        thisMonth: 0,
+        byType: {}
+      };
+    }
   }
 }
 
