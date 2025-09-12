@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
-import ActivityTimeline from "@/components/organisms/ActivityTimeline";
-import ActivityForm from "@/components/organisms/ActivityForm";
 import { activityService } from "@/services/api/activityService";
 import ApperIcon from "@/components/ApperIcon";
+import Activities from "@/components/pages/Activities";
+import ActivityTimeline from "@/components/organisms/ActivityTimeline";
+import ActivityForm from "@/components/organisms/ActivityForm";
 import Button from "@/components/atoms/Button";
 import Card from "@/components/atoms/Card";
 import Badge from "@/components/atoms/Badge";
@@ -186,20 +187,22 @@ icon: "MapPin"
               <ApperIcon name="Plus" className="h-4 w-4 mr-1" />
               Add Activity
             </Button>
-          </div>
+</div>
           
-<ActivityTimeline
-            activities={activities}
-            onDeleteActivity={handleDeleteActivity}
-            showEntityLinks={false}
-          />
+          <div>
+            <ActivityTimeline
+              activities={activities}
+              onDeleteActivity={handleDeleteActivity}
+              showEntityLinks={false}
+            />
           </div>
 
 <div className="mt-6 text-center">
             <Link to="/activities">
               <Button variant="outline" className="w-full">
                 View All Activities
-            </Button>
+              </Button>
+            </Link>
           </div>
         </Card>
       </div>

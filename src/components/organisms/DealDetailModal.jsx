@@ -154,11 +154,9 @@ const loadDealData = async () => {
       'Proposal': 'warning',
       'Negotiation': 'error',
       'Closed': 'success'
-    };
+};
     return colors[stage] || 'secondary';
-return colors[stage] || 'secondary';
   };
-
   // Mock progression history
   const mockProgression = [
     {
@@ -182,9 +180,7 @@ return colors[stage] || 'secondary';
       user: 'Sarah Johnson',
       probability: 65
     }
-  ];
-
-  };
+];
 
   if (!isOpen) return null;
 
