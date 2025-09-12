@@ -19,9 +19,11 @@ import Leads from "@/components/pages/Leads";
 import AddLead from "@/components/pages/AddLead";
 import LeadDetail from "@/components/pages/LeadDetail";
 import EditLead from "@/components/pages/EditLead";
+import Invoices from "@/components/pages/Invoices";
+import CreateInvoice from "@/components/pages/CreateInvoice";
+import InvoiceDetail from "@/components/pages/InvoiceDetail";
 import Header from "@/components/organisms/Header";
 import Sidebar from "@/components/organisms/Sidebar";
-
 // Pages
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -101,19 +103,17 @@ element={<DealPipeline />}
                   element={<DealDetail />}
                 />
                   <Route
-                    path="/invoices" 
-                    element={
-                      <ComingSoon 
-                        title="Invoice Management"
-                        description="Create, track, and manage customer invoices."
-                        icon="FileText"
-                        breadcrumbs={[
-                          { label: "Dashboard", href: "/" },
-                          { label: "Invoices" }
-                        ]}
-                      />
-                    } 
-                  />
+path="/invoices" 
+                  element={<Invoices />} 
+                />
+                <Route 
+                  path="/invoices/create" 
+                  element={<CreateInvoice />} 
+                />
+                <Route 
+                  path="/invoices/:id" 
+                  element={<InvoiceDetail />} 
+                />
 <Route 
                     path="/activities" 
                     element={
