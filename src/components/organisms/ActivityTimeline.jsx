@@ -66,11 +66,11 @@ const ActivityTimeline = ({ activities = [], onDeleteActivity, showEntityLinks =
   return (
     <div className="space-y-4">
       {displayedActivities.map((activity, index) => {
-        const isExpanded = expandedActivities.has(activity.Id);
+const isExpanded = expandedActivities.has(activity.Id || activity.id || activity.Id);
         const isLast = index === displayedActivities.length - 1;
 
         return (
-          <div key={activity.Id} className="relative">
+<div key={activity.Id || activity.id || `activity-${index}`} className="relative">
             {/* Timeline connector */}
             {!isLast && (
               <div className="absolute left-4 top-12 w-px h-16 bg-gray-200" />
@@ -163,7 +163,7 @@ const ActivityTimeline = ({ activities = [], onDeleteActivity, showEntityLinks =
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => toggleExpanded(activity.Id)}
+onClick={() => activity.Id || activity.id ? toggleExpanded(activity.Id || activity.id) : null}
                         className="text-gray-500 hover:text-gray-700"
                       >
                         <ApperIcon
@@ -176,7 +176,7 @@ const ActivityTimeline = ({ activities = [], onDeleteActivity, showEntityLinks =
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => onDeleteActivity(activity.Id)}
+onClick={() => activity.Id || activity.id ? onDeleteActivity(activity.Id || activity.id) : null}
                         className="text-gray-500 hover:text-red-600"
                       >
                         <ApperIcon name="Trash2" className="h-4 w-4" />
