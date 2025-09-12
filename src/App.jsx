@@ -14,6 +14,10 @@ import CompanyDetail from "@/components/pages/CompanyDetail";
 import AddContact from "@/components/pages/AddContact";
 import AddCompany from "@/components/pages/AddCompany";
 import Dashboard from "@/components/pages/Dashboard";
+import Leads from "@/components/pages/Leads";
+import AddLead from "@/components/pages/AddLead";
+import LeadDetail from "@/components/pages/LeadDetail";
+import EditLead from "@/components/pages/EditLead";
 import Header from "@/components/organisms/Header";
 import Sidebar from "@/components/organisms/Sidebar";
 
@@ -68,18 +72,20 @@ path="/companies"
                   element={<EditCompany />}
                 />
                   <Route 
-                    path="/leads" 
-                    element={
-                      <ComingSoon 
-                        title="Lead Management"
-                        description="Track and qualify leads through your sales pipeline."
-                        icon="Target"
-                        breadcrumbs={[
-                          { label: "Dashboard", href: "/" },
-                          { label: "Leads" }
-                        ]}
-                      />
-                    } 
+path="/leads" 
+                    element={<Leads />} 
+                  />
+                  <Route 
+                    path="/leads/new" 
+                    element={<AddLead />} 
+                  />
+                  <Route 
+                    path="/leads/:id" 
+                    element={<LeadDetail />} 
+                  />
+                  <Route 
+                    path="/leads/:id/edit" 
+                    element={<EditLead />}
                   />
 <Route 
                     path="/deals" 
