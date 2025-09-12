@@ -1,22 +1,31 @@
-import { useState, useEffect } from "react";
-import Breadcrumbs from "@/components/molecules/Breadcrumbs";
+import React, { useEffect, useState } from "react";
+import { contactService } from "@/services/api/contactService";
+import { reportService } from "@/services/api/reportService";
 import DashboardOverview from "@/components/organisms/DashboardOverview";
+import Breadcrumbs from "@/components/molecules/Breadcrumbs";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
-import { contactService } from "@/services/api/contactService";
 
 const Dashboard = () => {
-  const [contacts, setContacts] = useState([]);
+const Dashboard = () => {
+const [contacts, setContacts] = useState([]);
+  const [reportKpis, setReportKpis] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const loadContacts = async () => {
+  const loadDashboardData = async () => {
     try {
       setError("");
       setLoading(true);
       await new Promise(resolve => setTimeout(resolve, 300));
-      const data = await contactService.getAll();
-      setContacts(data);
+      
+      const [contactsData, kpisData] = await Promise.all([
+        contactService.getAll(),
+        reportService.getKPIs()
+      ]);
+      
+      setContacts(contactsData);
+      setReportKpis(kpisData);
     } catch (err) {
       setError("Failed to load dashboard data. Please try again.");
     } finally {
@@ -25,7 +34,7 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    loadContacts();
+    loadDashboardData();
   }, []);
 
   const breadcrumbs = [
@@ -43,22 +52,24 @@ const Dashboard = () => {
 
   if (error) {
     return (
-      <div>
+<div>
         <Breadcrumbs items={breadcrumbs} />
-        <Error message={error} onRetry={loadContacts} />
+        <Error message={error} onRetry={loadDashboardData} />
       </div>
     );
   }
 
-  const metrics = {
+const metrics = {
     totalContacts: contacts.length,
-    activeLeads: 24,
-    openDeals: 18,
-    revenue: 125000
+    activeLeads: reportKpis.totalLeads || 0,
+    openDeals: reportKpis.openDeals || 0,
+    revenue: reportKpis.totalRevenue || 0,
+    dealsClosed: reportKpis.dealsClosedThisMonth || 0,
+    conversionRate: reportKpis.leadConversionRate || 0
   };
 
-  const quickActions = [
-{
+const quickActions = [
+    {
       title: "Add Contact",
       description: "Create a new contact",
       icon: "UserPlus",
@@ -76,11 +87,17 @@ const Dashboard = () => {
       icon: "Target",
       href: "/leads/new"
     },
-{
+    {
       title: "Create Deal",
       description: "Start a new deal",
       icon: "Plus",
       href: "/deals/new"
+    },
+    {
+      title: "View Reports",
+      description: "Analytics & insights",
+      icon: "BarChart3",
+      href: "/reports"
     }
   ];
 
@@ -123,10 +140,11 @@ const Dashboard = () => {
   ];
 
   return (
-    <div>
+<div>
       <Breadcrumbs items={breadcrumbs} />
       <DashboardOverview 
         metrics={metrics}
+        reportKpis={reportKpis}
         recentActivities={recentActivities}
         quickActions={quickActions}
       />

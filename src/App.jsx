@@ -21,6 +21,10 @@ import AddLead from '@/components/pages/AddLead';
 import LeadDetail from '@/components/pages/LeadDetail';
 import EditLead from '@/components/pages/EditLead';
 import Invoices from '@/components/pages/Invoices';
+import Reports from '@/components/pages/Reports';
+import LeadReports from '@/components/pages/LeadReports';
+import DealReports from '@/components/pages/DealReports';
+import PerformanceReports from '@/components/pages/PerformanceReports';
 import CreateInvoice from '@/components/pages/CreateInvoice';
 import InvoiceDetail from '@/components/pages/InvoiceDetail';
 import Login from '@/components/pages/Login';
@@ -177,12 +181,10 @@ function App() {
                   <Route path="/invoices/create" element={<CreateInvoice />} />
                   <Route path="/invoices/:id" element={<InvoiceDetail />} />
                   <Route path="/activities" element={<Activities />} />
-                  <Route path="/reports" element={<ComingSoon title="Reports & Analytics" description="Generate insights from your sales and customer data." icon="BarChart3" breadcrumbs={[{
-                    label: "Dashboard",
-                    href: "/"
-                  }, {
-                    label: "Reports"
-                  }]} />} />
+<Route path="/reports" element={<Reports />} />
+                  <Route path="/reports/leads" element={<LeadReports />} />
+                  <Route path="/reports/deals" element={<DealReports />} />
+                  <Route path="/reports/performance" element={<PerformanceReports />} />
                 </Routes>
               </div>
             </main>

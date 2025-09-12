@@ -9,7 +9,8 @@ import MetricCard from "@/components/molecules/MetricCard";
 import Button from "@/components/atoms/Button";
 import Card from "@/components/atoms/Card";
 import Badge from "@/components/atoms/Badge";
-const DashboardOverview = ({ metrics, quickActions }) => {
+
+const DashboardOverview = ({ metrics, reportKpis, quickActions }) => {
   const [recentActivities, setRecentActivities] = useState([]);
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const DashboardOverview = ({ metrics, quickActions }) => {
   return (
     <div className="space-y-6">
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <MetricCard
           title="Total Contacts"
           value={metrics.totalContacts}
@@ -55,6 +56,13 @@ const DashboardOverview = ({ metrics, quickActions }) => {
           icon="DollarSign"
           color="success"
           trend={{ value: "+15%", positive: true }}
+        />
+        <MetricCard
+          title="Conversion Rate"
+          value={`${metrics.conversionRate}%`}
+          icon="Target"
+          color="info"
+          trend={{ value: "+5%", positive: true }}
         />
       </div>
 
@@ -114,34 +122,70 @@ const DashboardOverview = ({ metrics, quickActions }) => {
         </Card>
       </div>
 
-      {/* Pipeline Overview */}
+{/* Reports Summary Widget */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Sales Pipeline</h2>
-          <Link to="/deals">
+          <h2 className="text-lg font-semibold text-gray-900">Performance Summary</h2>
+          <Link to="/reports">
             <Button variant="outline" size="sm">
-              <ApperIcon name="TrendingUp" className="h-4 w-4 mr-2" />
-              View Pipeline
+              <ApperIcon name="BarChart3" className="h-4 w-4 mr-2" />
+              View Reports
             </Button>
           </Link>
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-primary mb-1">12</div>
+          <div className="text-center p-4 bg-blue-50 rounded-lg">
+            <div className="text-2xl font-bold text-blue-600 mb-1">{reportKpis.qualifiedLeads || 0}</div>
             <div className="text-sm text-gray-600">Qualified Leads</div>
           </div>
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-warning mb-1">8</div>
-            <div className="text-sm text-gray-600">Proposals Sent</div>
+          <div className="text-center p-4 bg-yellow-50 rounded-lg">
+            <div className="text-2xl font-bold text-yellow-600 mb-1">{reportKpis.dealsClosedThisMonth || 0}</div>
+            <div className="text-sm text-gray-600">Deals Closed</div>
           </div>
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-success mb-1">5</div>
-            <div className="text-sm text-gray-600">Negotiations</div>
+          <div className="text-center p-4 bg-green-50 rounded-lg">
+            <div className="text-2xl font-bold text-green-600 mb-1">
+              ${((reportKpis.averageDealSize || 0)/1000).toFixed(0)}k
+            </div>
+            <div className="text-sm text-gray-600">Avg Deal Size</div>
           </div>
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-info mb-1">3</div>
-            <div className="text-sm text-gray-600">Closed Won</div>
+          <div className="text-center p-4 bg-purple-50 rounded-lg">
+            <div className="text-2xl font-bold text-purple-600 mb-1">{reportKpis.totalCompanies || 0}</div>
+            <div className="text-sm text-gray-600">Companies</div>
+          </div>
+        </div>
+        
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Link to="/reports/leads" className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div className="flex items-center gap-3">
+                <ApperIcon name="Users" className="h-5 w-5 text-blue-600" />
+                <div>
+                  <div className="font-medium text-gray-900">Lead Reports</div>
+                  <div className="text-sm text-gray-600">Conversion & aging</div>
+                </div>
+              </div>
+            </Link>
+            
+            <Link to="/reports/deals" className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div className="flex items-center gap-3">
+                <ApperIcon name="TrendingUp" className="h-5 w-5 text-green-600" />
+                <div>
+                  <div className="font-medium text-gray-900">Deal Reports</div>
+                  <div className="text-sm text-gray-600">Pipeline velocity</div>
+                </div>
+              </div>
+            </Link>
+            
+            <Link to="/reports/performance" className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div className="flex items-center gap-3">
+                <ApperIcon name="Trophy" className="h-5 w-5 text-purple-600" />
+                <div>
+                  <div className="font-medium text-gray-900">Performance</div>
+                  <div className="text-sm text-gray-600">Rep leaderboards</div>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </Card>
