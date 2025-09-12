@@ -20,10 +20,12 @@ class ContactService {
       if (!this.apperClient) this.initializeClient();
       
       const params = {
-        fields: [
+fields: [
           {"field": {"Name": "Id"}},
           {"field": {"Name": "Name"}},
-{"field": {"Name": "Tags"}},
+          {"field": {"Name": "Tags"}},
+          {"field": {"Name": "first_name_c"}},
+          {"field": {"Name": "last_name_c"}},
           {"field": {"Name": "name_c"}},
           {"field": {"Name": "email_c"}},
           {"field": {"Name": "phone_c"}},
@@ -58,10 +60,12 @@ class ContactService {
       if (!this.apperClient) this.initializeClient();
 
       const params = {
-        fields: [
+fields: [
           {"field": {"Name": "Id"}},
-{"field": {"Name": "Name"}},
+          {"field": {"Name": "Name"}},
           {"field": {"Name": "Tags"}},
+          {"field": {"Name": "first_name_c"}},
+          {"field": {"Name": "last_name_c"}},
           {"field": {"Name": "name_c"}},
           {"field": {"Name": "email_c"}},
           {"field": {"Name": "phone_c"}},
@@ -94,11 +98,13 @@ class ContactService {
       if (!this.apperClient) this.initializeClient();
 
       const params = {
-        records: [{
-Name: contactData.firstName && contactData.lastName ? 
+records: [{
+          Name: contactData.firstName && contactData.lastName ? 
                 `${contactData.firstName} ${contactData.lastName}` : 
                 contactData.firstName || contactData.name_c || contactData.name || "",
           Tags: contactData.Tags || "",
+          first_name_c: contactData.firstName || "",
+          last_name_c: contactData.lastName || "",
           name_c: contactData.firstName && contactData.lastName ? 
                   `${contactData.firstName} ${contactData.lastName}` : 
                   contactData.firstName || contactData.name_c || contactData.name || "",
@@ -147,6 +153,8 @@ Name: contactData.firstName && contactData.lastName ?
                 `${contactData.firstName} ${contactData.lastName}` : 
                 contactData.firstName || contactData.name_c || contactData.name || "",
           Tags: contactData.Tags || "",
+          first_name_c: contactData.firstName || "",
+          last_name_c: contactData.lastName || "",
           name_c: contactData.firstName && contactData.lastName ? 
                   `${contactData.firstName} ${contactData.lastName}` : 
                   contactData.firstName || contactData.name_c || contactData.name || "",

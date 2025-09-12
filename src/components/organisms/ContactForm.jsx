@@ -25,11 +25,11 @@ firstName: "",
 
   useEffect(() => {
 if (contact) {
-      // Split existing name into first and last name for editing
-      const fullName = contact.name_c || contact.name || "";
-      const nameParts = fullName.trim().split(" ");
-      const firstName = nameParts[0] || "";
-      const lastName = nameParts.slice(1).join(" ") || "";
+      // Use separate database fields if available, otherwise split existing name
+      const firstName = contact.first_name_c || 
+                       (contact.name_c || contact.name || "").trim().split(" ")[0] || "";
+      const lastName = contact.last_name_c || 
+                      (contact.name_c || contact.name || "").trim().split(" ").slice(1).join(" ") || "";
       
       setFormData({
         firstName: firstName,

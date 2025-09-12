@@ -52,7 +52,15 @@ const loadContact = async () => {
   const breadcrumbs = [
     { label: "Dashboard", href: "/" },
     { label: "Contacts", href: "/contacts" },
-    { label: contact?.name || "Contact Detail" }
+{ label: (() => {
+        if (contact?.first_name_c || contact?.last_name_c) {
+          const firstName = contact.first_name_c || '';
+          const lastName = contact.last_name_c || '';
+          return `${firstName} ${lastName}`.trim() || "Contact Detail";
+        }
+        return contact?.name_c || contact?.name || "Contact Detail";
+      })() 
+    }
   ];
 
   if (loading) {

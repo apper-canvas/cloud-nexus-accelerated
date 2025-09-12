@@ -99,11 +99,22 @@ icon: "MapPin"
           <div className="flex items-center">
             <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mr-4">
               <span className="text-xl font-bold">
-                {contact.name.charAt(0).toUpperCase()}
+{(() => {
+                  const firstName = contact.first_name_c || contact.name_c?.split(' ')[0] || contact.name?.split(' ')[0] || '';
+                  return firstName.charAt(0)?.toUpperCase() || '?';
+                })()}
               </span>
             </div>
             <div>
-<h1 className="text-2xl font-bold text-gray-900">{contact.name}</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {(() => {
+                  const firstName = contact.first_name_c || '';
+                  const lastName = contact.last_name_c || '';
+                  const fullName = firstName && lastName ? `${firstName} ${lastName}` : 
+                                  contact.name_c || contact.name || '';
+                  return fullName || 'No name';
+                })()}
+              </h1>
               <p className="text-gray-600">
                 {contact.position}
                 {contact.company && (

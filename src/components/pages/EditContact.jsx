@@ -47,7 +47,16 @@ const EditContact = () => {
   const breadcrumbs = [
     { label: "Dashboard", href: "/" },
     { label: "Contacts", href: "/contacts" },
-    { label: contact?.name || "Edit Contact" }
+{ label: (() => {
+        if (contact?.first_name_c || contact?.last_name_c) {
+          const firstName = contact.first_name_c || '';
+          const lastName = contact.last_name_c || '';
+          const fullName = `${firstName} ${lastName}`.trim();
+          return fullName ? `Edit ${fullName}` : "Edit Contact";
+        }
+        return contact?.name_c || contact?.name ? `Edit ${contact.name_c || contact.name}` : "Edit Contact";
+      })() 
+    }
   ];
 
   if (loading) {

@@ -12,10 +12,8 @@ const [sortField, setSortField] = useState("firstName");
   const [sortDirection, setSortDirection] = useState("asc");
 
 const filteredContacts = contacts.filter(contact => {
-    const fullName = contact.name_c || contact.name || '';
-    const nameParts = fullName.trim().split(' ');
-    const firstName = nameParts[0] || '';
-    const lastName = nameParts.slice(1).join(' ') || '';
+    const firstName = contact.first_name_c || '';
+    const lastName = contact.last_name_c || '';
     
     return firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
            lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -28,15 +26,11 @@ const sortedContacts = [...filteredContacts].sort((a, b) => {
     let bValue = "";
     
     if (sortField === "firstName") {
-      const aName = a.name_c || a.name || '';
-      const bName = b.name_c || b.name || '';
-      aValue = aName.trim().split(' ')[0] || '';
-      bValue = bName.trim().split(' ')[0] || '';
+      aValue = a.first_name_c || '';
+      bValue = b.first_name_c || '';
     } else if (sortField === "lastName") {
-      const aName = a.name_c || a.name || '';
-      const bName = b.name_c || b.name || '';
-      aValue = aName.trim().split(' ').slice(1).join(' ') || '';
-      bValue = bName.trim().split(' ').slice(1).join(' ') || '';
+      aValue = a.last_name_c || '';
+      bValue = b.last_name_c || '';
     } else {
       aValue = (a[sortField] || "").toString();
       bValue = (b[sortField] || "").toString();
@@ -144,33 +138,26 @@ const sortedContacts = [...filteredContacts].sort((a, b) => {
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center">
 <span className="text-sm font-medium">
-                          {(() => {
-                            const fullName = contact.name_c || contact.name || '';
-                            const firstName = fullName.trim().split(' ')[0] || '';
+{(() => {
+                            const firstName = contact.first_name_c || '';
                             return firstName.charAt(0)?.toUpperCase() || '?';
                           })()}
                         </span>
                       </div>
-<div className="ml-4">
+                      <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
                           {(() => {
-                            const fullName = contact.name_c || contact.name || '';
-                            const nameParts = fullName.trim().split(' ');
-                            const firstName = nameParts[0] || '';
-                            const lastName = nameParts.slice(1).join(' ') || '';
+                            const firstName = contact.first_name_c || '';
+                            const lastName = contact.last_name_c || '';
                             return `${firstName} ${lastName}`.trim() || 'No name';
                           })()}
                         </div>
                       </div>
                     </div>
                   </td>
-<td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
-                      {(() => {
-                        const fullName = contact.name_c || contact.name || '';
-                        const nameParts = fullName.trim().split(' ');
-                        return nameParts.slice(1).join(' ') || '-';
-                      })()}
+                      {contact.last_name_c || '-'}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
