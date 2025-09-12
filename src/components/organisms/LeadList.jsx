@@ -189,8 +189,8 @@ const filteredLeads = leads.filter(lead => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center">
-                        <span className="text-sm font-medium">
-                          {lead.firstName.charAt(0).toUpperCase()}
+<span className="text-sm font-medium">
+                          {(lead.first_name_c || 'L').charAt(0).toUpperCase()}
                         </span>
                       </div>
                       <div className="ml-4">
