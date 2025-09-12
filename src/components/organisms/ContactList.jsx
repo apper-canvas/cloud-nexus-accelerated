@@ -151,9 +151,9 @@ const sortedContacts = [...filteredContacts].sort((a, b) => {
                           })()}
                         </span>
                       </div>
-                      <div className="ml-4">
+<div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
-{(() => {
+                          {(() => {
                             const fullName = contact.name_c || contact.name || '';
                             const nameParts = fullName.trim().split(' ');
                             const firstName = nameParts[0] || '';
@@ -161,16 +161,16 @@ const sortedContacts = [...filteredContacts].sort((a, b) => {
                             return `${firstName} ${lastName}`.trim() || 'No name';
                           })()}
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {(() => {
-                            const fullName = contact.name_c || contact.name || '';
-                            const nameParts = fullName.trim().split(' ');
-                            return nameParts.slice(1).join(' ') || '-';
-                          })()}
-                        </div>
                       </div>
+                    </div>
+                  </td>
+<td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">
+                      {(() => {
+                        const fullName = contact.name_c || contact.name || '';
+                        const nameParts = fullName.trim().split(' ');
+                        return nameParts.slice(1).join(' ') || '-';
+                      })()}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
