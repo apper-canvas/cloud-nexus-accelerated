@@ -115,7 +115,7 @@ const sortedContacts = [...filteredContacts].sort((a, b) => {
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center">
                         <span className="text-sm font-medium">
-                          {contact.name.charAt(0).toUpperCase()}
+{contact.name?.charAt(0)?.toUpperCase() || '?'}
                         </span>
                       </div>
                       <div className="ml-4">
