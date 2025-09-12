@@ -5,7 +5,7 @@ import { cn } from "@/utils/cn";
 const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
 
-  const menuItems = [
+const menuItems = [
     { label: "Dashboard", href: "/", icon: "LayoutDashboard" },
     { label: "Contacts", href: "/contacts", icon: "Users" },
     { label: "Companies", href: "/companies", icon: "Building" },
@@ -13,6 +13,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: "Deals", href: "/deals", icon: "TrendingUp" },
     { label: "Invoices", href: "/invoices", icon: "FileText" },
     { label: "Activities", href: "/activities", icon: "Calendar" },
+    { label: "Tasks", href: "/tasks", icon: "CheckSquare" },
     { label: "Reports", href: "/reports", icon: "BarChart3" }
   ];
 

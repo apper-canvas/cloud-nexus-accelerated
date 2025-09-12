@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser, clearUser } from './store/userSlice';
 import Activities from '@/components/pages/Activities';
+import Tasks from '@/components/pages/Tasks';
 import DealPipeline from '@/components/pages/DealPipeline';
 import DealDetail from '@/components/pages/DealDetail';
 import AddDeal from '@/components/pages/AddDeal';
@@ -180,8 +181,9 @@ function App() {
                   <Route path="/invoices" element={<Invoices />} />
                   <Route path="/invoices/create" element={<CreateInvoice />} />
                   <Route path="/invoices/:id" element={<InvoiceDetail />} />
-                  <Route path="/activities" element={<Activities />} />
-<Route path="/reports" element={<Reports />} />
+<Route path="/activities" element={<Activities />} />
+                  <Route path="/tasks" element={<Tasks />} />
+                  <Route path="/reports" element={<Reports />} />
                   <Route path="/reports/leads" element={<LeadReports />} />
                   <Route path="/reports/deals" element={<DealReports />} />
                   <Route path="/reports/performance" element={<PerformanceReports />} />

@@ -278,7 +278,7 @@ class ActivityService {
     }
   }
 
-  async getActivityStats() {
+async getActivityStats() {
     try {
       const activities = await this.getAll();
       const today = new Date();
@@ -309,6 +309,180 @@ class ActivityService {
         byType: {}
       };
     }
+  }
+
+  // Task-specific methods
+  async getTasks(filters = {}) {
+    try {
+      const params = {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "Tags"}},
+          {"field": {"Name": "type_c"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "outcome_c"}},
+          {"field": {"Name": "date_c"}},
+          {"field": {"Name": "duration_c"}},
+          {"field": {"Name": "contact_id_c"}},
+          {"field": {"Name": "company_id_c"}},
+          {"field": {"Name": "deal_id_c"}},
+          {"field": {"Name": "user_id_c"}},
+          {"field": {"Name": "user_name_c"}},
+          {"field": {"Name": "created_at_c"}},
+          {"field": {"Name": "updated_at_c"}}
+        ],
+        where: [
+          {"FieldName": "type_c", "Operator": "EqualTo", "Values": ["task"]}
+        ],
+        orderBy: [{"fieldName": "date_c", "sorttype": "ASC"}]
+      };
+
+      // Add status filter
+      if (filters.status === 'completed') {
+        params.where.push({"FieldName": "outcome_c", "Operator": "HasValue", "Values": [""]});
+      } else if (filters.status === 'pending') {
+        params.where.push({"FieldName": "outcome_c", "Operator": "DoesNotHaveValue", "Values": [""]});
+      }
+
+      // Add assignee filter
+      if (filters.assignee) {
+        params.where.push({"FieldName": "user_name_c", "Operator": "EqualTo", "Values": [filters.assignee]});
+      }
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response.success) {
+        console.error("Failed to fetch tasks:", response.message);
+        return [];
+      }
+
+      return response.data?.map(task => ({
+        ...task,
+        id: task.Id,
+        title: task.title_c || task.Name,
+        description: task.description_c,
+        status: task.outcome_c ? 'completed' : 'pending',
+        dueDate: task.date_c,
+        assignee: task.user_name_c,
+        priority: this.extractPriorityFromTags(task.Tags),
+        contactId: task.contact_id_c,
+        companyId: task.company_id_c,
+        dealId: task.deal_id_c,
+        createdAt: task.created_at_c,
+        updatedAt: task.updated_at_c
+      })) || [];
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      return [];
+    }
+  }
+
+  async getTasksByStatus(status) {
+    return this.getTasks({ status });
+  }
+
+  async getTasksByAssignee(assignee) {
+    return this.getTasks({ assignee });
+  }
+
+  async getOverdueTasks() {
+    try {
+      const allTasks = await this.getTasks({ status: 'pending' });
+      const today = new Date();
+      return allTasks.filter(task => {
+        if (!task.dueDate) return false;
+        const dueDate = new Date(task.dueDate);
+        return dueDate < today;
+      });
+    } catch (error) {
+      console.error("Error fetching overdue tasks:", error);
+      return [];
+    }
+  }
+
+  async getTaskStats() {
+    try {
+      const allTasks = await this.getTasks();
+      const pendingTasks = allTasks.filter(t => t.status === 'pending');
+      const completedTasks = allTasks.filter(t => t.status === 'completed');
+      const overdueTasks = await this.getOverdueTasks();
+
+      const today = new Date();
+      const thisWeek = allTasks.filter(t => {
+        if (!t.createdAt) return false;
+        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        return new Date(t.createdAt) >= weekAgo;
+      }).length;
+
+      const byPriority = allTasks.reduce((acc, task) => {
+        const priority = task.priority || 'medium';
+        acc[priority] = (acc[priority] || 0) + 1;
+        return acc;
+      }, {});
+
+      return {
+        total: allTasks.length,
+        pending: pendingTasks.length,
+        completed: completedTasks.length,
+        overdue: overdueTasks.length,
+        thisWeek,
+        completionRate: allTasks.length > 0 ? Math.round((completedTasks.length / allTasks.length) * 100) : 0,
+        byPriority
+      };
+    } catch (error) {
+      console.error("Error fetching task stats:", error);
+      return {
+        total: 0,
+        pending: 0,
+        completed: 0,
+        overdue: 0,
+        thisWeek: 0,
+        completionRate: 0,
+        byPriority: {}
+      };
+    }
+  }
+
+  async createTask(taskData) {
+    const activityData = {
+      title_c: taskData.title,
+      description_c: taskData.description,
+      type_c: 'task',
+      date_c: taskData.dueDate || new Date().toISOString(),
+      user_name_c: taskData.assignee,
+      Tags: this.formatTagsWithPriority(taskData.priority, taskData.tags),
+      contact_id_c: taskData.contactId,
+      company_id_c: taskData.companyId,
+      deal_id_c: taskData.dealId,
+      duration_c: taskData.estimatedHours
+    };
+
+    return this.create(activityData);
+  }
+
+  async updateTaskStatus(taskId, completed, completionNotes = '') {
+    const updateData = {
+      outcome_c: completed ? (completionNotes || 'Task completed') : null,
+      updated_at_c: new Date().toISOString()
+    };
+
+    return this.update(taskId, updateData);
+  }
+
+  extractPriorityFromTags(tags) {
+    if (!tags) return 'medium';
+    const tagList = tags.toLowerCase().split(',');
+    if (tagList.includes('high')) return 'high';
+    if (tagList.includes('low')) return 'low';
+    return 'medium';
+  }
+
+  formatTagsWithPriority(priority, additionalTags = '') {
+    const priorityTag = priority || 'medium';
+    const tags = additionalTags ? `${priorityTag},${additionalTags}` : priorityTag;
+    return tags;
   }
 }
 
