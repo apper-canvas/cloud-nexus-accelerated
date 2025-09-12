@@ -11,16 +11,16 @@ const CompanyList = ({ companies, onDeleteCompany }) => {
   const [sortField, setSortField] = useState("name");
   const [sortDirection, setSortDirection] = useState("asc");
 
-  const filteredCompanies = companies.filter(company =>
-    company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    company.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    company.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    company.relationshipStage.toLowerCase().includes(searchTerm.toLowerCase())
+const filteredCompanies = companies.filter(company =>
+    (company.name?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+    (company.industry?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+    (company.location?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+    (company.relationshipStage?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   );
 
   const sortedCompanies = [...filteredCompanies].sort((a, b) => {
-    const aValue = a[sortField] || "";
-    const bValue = b[sortField] || "";
+const aValue = a[sortField]?.toLowerCase?.() || a[sortField] || "";
+    const bValue = b[sortField]?.toLowerCase?.() || b[sortField] || "";
     
     if (sortDirection === "asc") {
       return aValue.toString().localeCompare(bValue.toString());
