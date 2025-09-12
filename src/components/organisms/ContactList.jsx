@@ -11,16 +11,16 @@ const ContactList = ({ contacts, onDeleteContact }) => {
   const [sortField, setSortField] = useState("name");
   const [sortDirection, setSortDirection] = useState("asc");
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contact.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contact.position.toLowerCase().includes(searchTerm.toLowerCase())
+const filteredContacts = contacts.filter(contact =>
+    (contact.name_c || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (contact.email_c || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (contact.company_c || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (contact.position_c || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const sortedContacts = [...filteredContacts].sort((a, b) => {
-    const aValue = a[sortField] || "";
-    const bValue = b[sortField] || "";
+const sortedContacts = [...filteredContacts].sort((a, b) => {
+    const aValue = (a[sortField] || "").toString();
+    const bValue = (b[sortField] || "").toString();
     
     if (sortDirection === "asc") {
       return aValue.localeCompare(bValue);
