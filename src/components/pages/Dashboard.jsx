@@ -76,10 +76,10 @@ const Dashboard = () => {
       icon: "Target",
       href: "/leads/new"
     },
-    {
+{
       title: "Create Deal",
       description: "Start a new deal",
-      icon: "TrendingUp",
+      icon: "Plus",
       href: "/deals/new"
     }
   ];
