@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import DealPipeline from "@/components/pages/DealPipeline";
+import DealDetail from "@/components/pages/DealDetail";
 import ContactDetail from "@/components/pages/ContactDetail";
 import EditCompany from "@/components/pages/EditCompany";
 import Contacts from "@/components/pages/Contacts";
@@ -82,6 +83,10 @@ path="/companies"
 <Route 
                     path="/deals" 
                     element={<DealPipeline />}
+                  />
+                  <Route 
+                    path="/deals/:id" 
+                    element={<DealDetail />}
                   />
                   <Route
                     path="/invoices" 

@@ -7,7 +7,7 @@ import Card from "@/components/atoms/Card";
 import Badge from "@/components/atoms/Badge";
 import { cn } from "@/utils/cn";
 
-const DealCard = ({ deal, company, isDragging = false }) => {
+const DealCard = ({ deal, company, isDragging = false, onClick }) => {
   const {
     attributes,
     listeners,
@@ -48,14 +48,23 @@ const DealCard = ({ deal, company, isDragging = false }) => {
     return colors[stage] || 'secondary';
   };
 
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onClick) {
+      onClick();
+    }
+  };
+
   return (
     <Card 
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
+      onClick={handleClick}
       className={cn(
-        "p-4 cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow",
+        "p-4 cursor-pointer hover:shadow-md transition-shadow",
         isDragging && "opacity-50 transform rotate-2 shadow-lg"
       )}
     >

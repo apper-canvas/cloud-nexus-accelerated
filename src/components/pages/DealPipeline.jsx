@@ -12,14 +12,15 @@ import Error from "@/components/ui/Error";
 import { dealService } from "@/services/api/dealService";
 import { companyService } from "@/services/api/companyService";
 import DealCard from "@/components/organisms/DealCard";
-
+import DealDetailModal from "@/components/organisms/DealDetailModal";
 const DealPipeline = () => {
-  const [deals, setDeals] = useState([]);
+const [deals, setDeals] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeId, setActiveId] = useState(null);
-
+  const [selectedDealId, setSelectedDealId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const stages = [
     { id: 'Prospecting', name: 'Prospecting', color: 'bg-gray-500', probability: 20 },
     { id: 'Qualification', name: 'Qualification', color: 'bg-blue-500', probability: 40 },
@@ -83,8 +84,20 @@ const DealPipeline = () => {
     setActiveId(null);
   };
 
-  const getDealsByStage = (stageId) => {
+const getDealsByStage = (stageId) => {
     return deals.filter(deal => deal.stage === stageId);
+  };
+
+  const handleDealClick = (dealId) => {
+    setSelectedDealId(dealId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedDealId(null);
+    // Refresh deals data after modal closes to show any updates
+    loadData();
   };
 
   const getStageMetrics = (stageId) => {
@@ -175,12 +188,13 @@ const DealPipeline = () => {
                   <div className="flex-1 space-y-3 min-h-[400px] p-2 bg-gray-50 rounded-lg">
                     {stageDeals.map(deal => {
                       const company = companies.find(c => c.Id === deal.companyId);
-                      return (
+return (
                         <DealCard 
                           key={deal.Id}
                           deal={deal}
                           company={company}
                           isDragging={activeId === deal.Id.toString()}
+                          onClick={() => handleDealClick(deal.Id)}
                         />
                       );
                     })}
@@ -206,7 +220,13 @@ const DealPipeline = () => {
             />
           ) : null}
         </DragOverlay>
-      </DndContext>
+</DndContext>
+      
+      <DealDetailModal
+        dealId={selectedDealId}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };
