@@ -1,26 +1,46 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
-import Card from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
 import SearchBar from "@/components/molecules/SearchBar";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
 import Badge from "@/components/atoms/Badge";
 
 const ContactList = ({ contacts, onDeleteContact }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortField, setSortField] = useState("name");
+const [sortField, setSortField] = useState("firstName");
   const [sortDirection, setSortDirection] = useState("asc");
 
-const filteredContacts = contacts.filter(contact =>
-    (contact.name_c || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (contact.email_c || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (contact.company_c || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (contact.position_c || '').toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+const filteredContacts = contacts.filter(contact => {
+    const fullName = contact.name_c || contact.name || '';
+    const nameParts = fullName.trim().split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+    
+    return firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           (contact.email_c || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+           (contact.company_c || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+           (contact.position_c || '').toLowerCase().includes(searchTerm.toLowerCase());
+  });
 const sortedContacts = [...filteredContacts].sort((a, b) => {
-    const aValue = (a[sortField] || "").toString();
-    const bValue = (b[sortField] || "").toString();
+    let aValue = "";
+    let bValue = "";
+    
+    if (sortField === "firstName") {
+      const aName = a.name_c || a.name || '';
+      const bName = b.name_c || b.name || '';
+      aValue = aName.trim().split(' ')[0] || '';
+      bValue = bName.trim().split(' ')[0] || '';
+    } else if (sortField === "lastName") {
+      const aName = a.name_c || a.name || '';
+      const bName = b.name_c || b.name || '';
+      aValue = aName.trim().split(' ').slice(1).join(' ') || '';
+      bValue = bName.trim().split(' ').slice(1).join(' ') || '';
+    } else {
+      aValue = (a[sortField] || "").toString();
+      bValue = (b[sortField] || "").toString();
+    }
     
     if (sortDirection === "asc") {
       return aValue.localeCompare(bValue);
@@ -64,13 +84,22 @@ const sortedContacts = [...filteredContacts].sort((a, b) => {
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-6 py-3 text-left">
+<th className="px-6 py-3 text-left">
                   <button
-                    onClick={() => handleSort("name")}
+                    onClick={() => handleSort("firstName")}
                     className="flex items-center text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
                   >
-                    Name
-                    <ApperIcon name={getSortIcon("name")} className="ml-1 h-3 w-3" />
+                    First Name
+                    <ApperIcon name={getSortIcon("firstName")} className="ml-1 h-3 w-3" />
+                  </button>
+                </th>
+                <th className="px-6 py-3 text-left">
+                  <button
+                    onClick={() => handleSort("lastName")}
+                    className="flex items-center text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
+                  >
+                    Last Name
+                    <ApperIcon name={getSortIcon("lastName")} className="ml-1 h-3 w-3" />
                   </button>
                 </th>
                 <th className="px-6 py-3 text-left">
@@ -107,20 +136,39 @@ const sortedContacts = [...filteredContacts].sort((a, b) => {
                   Actions
                 </th>
               </tr>
-            </thead>
+</thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {sortedContacts.map((contact) => (
                 <tr key={contact.Id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center">
-                        <span className="text-sm font-medium">
-{contact.name?.charAt(0)?.toUpperCase() || '?'}
+<span className="text-sm font-medium">
+                          {(() => {
+                            const fullName = contact.name_c || contact.name || '';
+                            const firstName = fullName.trim().split(' ')[0] || '';
+                            return firstName.charAt(0)?.toUpperCase() || '?';
+                          })()}
                         </span>
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
-                          {contact.name}
+{(() => {
+                            const fullName = contact.name_c || contact.name || '';
+                            const nameParts = fullName.trim().split(' ');
+                            const firstName = nameParts[0] || '';
+                            const lastName = nameParts.slice(1).join(' ') || '';
+                            return `${firstName} ${lastName}`.trim() || 'No name';
+                          })()}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {(() => {
+                            const fullName = contact.name_c || contact.name || '';
+                            const nameParts = fullName.trim().split(' ');
+                            return nameParts.slice(1).join(' ') || '-';
+                          })()}
                         </div>
                       </div>
                     </div>
@@ -171,7 +219,7 @@ const sortedContacts = [...filteredContacts].sort((a, b) => {
           <ApperIcon name="Users" className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <p className="text-lg font-medium text-gray-900 mb-2">No contacts found</p>
           <p className="text-gray-500 mb-4">
-            {searchTerm ? "Try adjusting your search terms" : "Get started by adding your first contact"}
+{searchTerm ? "Try adjusting your search terms to find contacts by first name, last name, email, company, or position" : "Get started by adding your first contact with separate first and last name fields"}
           </p>
           <Link to="/contacts/new">
             <Button>

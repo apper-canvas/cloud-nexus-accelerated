@@ -23,7 +23,7 @@ class ContactService {
         fields: [
           {"field": {"Name": "Id"}},
           {"field": {"Name": "Name"}},
-          {"field": {"Name": "Tags"}},
+{"field": {"Name": "Tags"}},
           {"field": {"Name": "name_c"}},
           {"field": {"Name": "email_c"}},
           {"field": {"Name": "phone_c"}},
@@ -60,7 +60,7 @@ class ContactService {
       const params = {
         fields: [
           {"field": {"Name": "Id"}},
-          {"field": {"Name": "Name"}},
+{"field": {"Name": "Name"}},
           {"field": {"Name": "Tags"}},
           {"field": {"Name": "name_c"}},
           {"field": {"Name": "email_c"}},
@@ -95,9 +95,13 @@ class ContactService {
 
       const params = {
         records: [{
-          Name: contactData.name_c || contactData.name,
+Name: contactData.firstName && contactData.lastName ? 
+                `${contactData.firstName} ${contactData.lastName}` : 
+                contactData.firstName || contactData.name_c || contactData.name || "",
           Tags: contactData.Tags || "",
-          name_c: contactData.name_c || contactData.name,
+          name_c: contactData.firstName && contactData.lastName ? 
+                  `${contactData.firstName} ${contactData.lastName}` : 
+                  contactData.firstName || contactData.name_c || contactData.name || "",
           email_c: contactData.email_c || contactData.email,
           phone_c: contactData.phone_c || contactData.phone,
           position_c: contactData.position_c || contactData.position,
@@ -139,9 +143,13 @@ class ContactService {
       const params = {
         records: [{
           Id: id,
-          Name: contactData.name_c || contactData.name,
+Name: contactData.firstName && contactData.lastName ? 
+                `${contactData.firstName} ${contactData.lastName}` : 
+                contactData.firstName || contactData.name_c || contactData.name || "",
           Tags: contactData.Tags || "",
-          name_c: contactData.name_c || contactData.name,
+          name_c: contactData.firstName && contactData.lastName ? 
+                  `${contactData.firstName} ${contactData.lastName}` : 
+                  contactData.firstName || contactData.name_c || contactData.name || "",
           email_c: contactData.email_c || contactData.email,
           phone_c: contactData.phone_c || contactData.phone,
           position_c: contactData.position_c || contactData.position,

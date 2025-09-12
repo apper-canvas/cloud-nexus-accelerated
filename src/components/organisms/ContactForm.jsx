@@ -10,7 +10,8 @@ const ContactForm = ({ contact, onSubmit, isEditing = false }) => {
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
-    name: "",
+firstName: "",
+    lastName: "",
     email: "",
     phone: "",
     position: "",
@@ -23,24 +24,31 @@ const ContactForm = ({ contact, onSubmit, isEditing = false }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (contact) {
+if (contact) {
+      // Split existing name into first and last name for editing
+      const fullName = contact.name_c || contact.name || "";
+      const nameParts = fullName.trim().split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+      
       setFormData({
-        name: contact.name || "",
-        email: contact.email || "",
-        phone: contact.phone || "",
-        position: contact.position || "",
-        company: contact.company || "",
-        address: contact.address || "",
-        notes: contact.notes || ""
+        firstName: firstName,
+        lastName: lastName,
+        email: contact.email_c || contact.email || "",
+        phone: contact.phone_c || contact.phone || "",
+        position: contact.position_c || contact.position || "",
+        company: contact.company_c || contact.company || "",
+        address: contact.address_c || contact.address || "",
+        notes: contact.notes_c || contact.notes || ""
       });
     }
   }, [contact]);
 
-  const validateForm = () => {
+const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First name is required";
     }
     
     if (!formData.email.trim()) {
@@ -61,7 +69,7 @@ const ContactForm = ({ contact, onSubmit, isEditing = false }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (e) => {
+const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
@@ -104,16 +112,25 @@ const ContactForm = ({ contact, onSubmit, isEditing = false }) => {
         </h2>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+<form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
-            label="Name"
-            name="name"
-            value={formData.name}
+            label="First Name"
+            name="firstName"
+            value={formData.firstName}
             onChange={handleChange}
-            error={errors.name}
+            error={errors.firstName}
             required
-            placeholder="Enter full name"
+            placeholder="Enter first name"
+          />
+          
+          <FormField
+            label="Last Name"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            error={errors.lastName}
+            placeholder="Enter last name"
           />
 
           <FormField
