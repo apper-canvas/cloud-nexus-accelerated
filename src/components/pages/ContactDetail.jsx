@@ -5,14 +5,16 @@ import ContactDetails from "@/components/organisms/ContactDetails";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import { contactService } from "@/services/api/contactService";
+import { companyService } from "@/services/api/companyService";
 
 const ContactDetail = () => {
-  const { id } = useParams();
+const { id } = useParams();
   const [contact, setContact] = useState(null);
+  const [linkedCompany, setLinkedCompany] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const loadContact = async () => {
+const loadContact = async () => {
     try {
       setError("");
       setLoading(true);
@@ -23,6 +25,19 @@ const ContactDetail = () => {
         return;
       }
       setContact(data);
+      
+      // Load linked company if contact has one
+      if (data.company) {
+        try {
+          const companies = await companyService.getAll();
+          const company = companies.find(c => c.name === data.company);
+          if (company) {
+            setLinkedCompany(company);
+          }
+        } catch (companyErr) {
+          console.error("Failed to load company details:", companyErr);
+        }
+      }
     } catch (err) {
       setError("Failed to load contact details. Please try again.");
     } finally {
@@ -61,7 +76,7 @@ const ContactDetail = () => {
   return (
     <div>
       <Breadcrumbs items={breadcrumbs} />
-      <ContactDetails contact={contact} />
+<ContactDetails contact={contact} linkedCompany={linkedCompany} />
     </div>
   );
 };

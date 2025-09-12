@@ -4,8 +4,8 @@ import { toast } from "react-toastify";
 import Button from "@/components/atoms/Button";
 import Card from "@/components/atoms/Card";
 import FormField from "@/components/molecules/FormField";
+import CompanySelector from "@/components/molecules/CompanySelector";
 import ApperIcon from "@/components/ApperIcon";
-
 const ContactForm = ({ contact, onSubmit, isEditing = false }) => {
   const navigate = useNavigate();
   
@@ -147,15 +147,22 @@ const ContactForm = ({ contact, onSubmit, isEditing = false }) => {
             placeholder="Enter job position"
           />
 
-          <FormField
+<FormField
             label="Company"
             name="company"
             value={formData.company}
             onChange={handleChange}
             error={errors.company}
             required
-            placeholder="Enter company name"
-          />
+          >
+            <CompanySelector
+              value={formData.company}
+              onChange={handleChange}
+              error={errors.company}
+              required
+              placeholder="Select company"
+            />
+          </FormField>
 
           <FormField
             label="Address"

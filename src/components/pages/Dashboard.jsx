@@ -58,11 +58,17 @@ const Dashboard = () => {
   };
 
   const quickActions = [
-    {
+{
       title: "Add Contact",
       description: "Create a new contact",
       icon: "UserPlus",
       href: "/contacts/new"
+    },
+    {
+      title: "Add Company",
+      description: "Create a new company",
+      icon: "Building",
+      href: "/companies/new"
     },
     {
       title: "New Lead",
@@ -75,12 +81,6 @@ const Dashboard = () => {
       description: "Start a new deal",
       icon: "TrendingUp",
       href: "/deals/new"
-    },
-    {
-      title: "Generate Report",
-      description: "View analytics",
-      icon: "BarChart3",
-      href: "/reports"
     }
   ];
 

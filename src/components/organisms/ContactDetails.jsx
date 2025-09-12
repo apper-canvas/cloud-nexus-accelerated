@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import React from "react";
 import ApperIcon from "@/components/ApperIcon";
-import Card from "@/components/atoms/Card";
 import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
 import Badge from "@/components/atoms/Badge";
-
-const ContactDetails = ({ contact }) => {
+const ContactDetails = ({ contact, linkedCompany }) => {
   if (!contact) return null;
 
   const contactInfo = [
@@ -20,11 +20,12 @@ const ContactDetails = ({ contact }) => {
       value: contact.phone,
       icon: "Phone",
       link: `tel:${contact.phone}`
-    },
+},
     {
       label: "Company",
       value: contact.company,
-      icon: "Building"
+      icon: "Building",
+      linkedCompany: linkedCompany
     },
     {
       label: "Position",
@@ -92,8 +93,25 @@ const ContactDetails = ({ contact }) => {
               </span>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{contact.name}</h1>
-              <p className="text-gray-600">{contact.position} at {contact.company}</p>
+<h1 className="text-2xl font-bold text-gray-900">{contact.name}</h1>
+              <p className="text-gray-600">
+                {contact.position}
+                {contact.company && (
+                  <>
+                    {" at "}
+                    {linkedCompany ? (
+                      <Link 
+                        to={`/companies/${linkedCompany.Id}`}
+                        className="text-primary hover:underline"
+                      >
+                        {contact.company}
+                      </Link>
+                    ) : (
+                      contact.company
+                    )}
+                  </>
+                )}
+              </p>
               <div className="flex items-center mt-2 text-sm text-gray-500">
                 <ApperIcon name="Calendar" className="h-4 w-4 mr-1" />
                 Created {format(new Date(contact.createdAt), "MMM d, yyyy")}

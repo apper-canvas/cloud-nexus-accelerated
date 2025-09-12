@@ -1,0 +1,67 @@
+[
+  {
+    "Id": 1,
+    "name": "TechCorp Solutions",
+    "industry": "Technology",
+    "size": "51-200",
+    "location": "San Francisco, CA",
+    "website": "https://techcorp.com",
+    "relationshipStage": "Active Client",
+    "description": "Leading software development company specializing in enterprise solutions and cloud infrastructure.",
+    "contactCount": 3,
+    "createdAt": "2024-01-05T09:00:00Z",
+    "updatedAt": "2024-01-15T14:30:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "InnovateTech",
+    "industry": "Technology",
+    "size": "11-50",
+    "location": "Austin, TX",
+    "website": "https://innovatetech.io",
+    "relationshipStage": "Prospect",
+    "description": "Innovative startup focused on AI-powered business automation tools.",
+    "contactCount": 1,
+    "createdAt": "2024-01-08T11:15:00Z",
+    "updatedAt": "2024-01-20T16:45:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "DigitalFlow Systems",
+    "industry": "Technology",
+    "size": "201-500",
+    "location": "Seattle, WA",
+    "website": "https://digitalflow.com",
+    "relationshipStage": "Active Client",
+    "description": "Enterprise digital transformation consultancy with focus on workflow optimization.",
+    "contactCount": 2,
+    "createdAt": "2024-01-12T08:30:00Z",
+    "updatedAt": "2024-01-18T13:20:00Z"
+  },
+  {
+    "Id": 4,
+    "name": "Global Manufacturing Inc",
+    "industry": "Manufacturing",
+    "size": "501-1000",
+    "location": "Detroit, MI",
+    "website": "https://globalmfg.com",
+    "relationshipStage": "Lead",
+    "description": "International manufacturing company specializing in automotive parts and industrial equipment.",
+    "contactCount": 0,
+    "createdAt": "2024-01-20T10:00:00Z",
+    "updatedAt": "2024-01-22T09:15:00Z"
+  },
+  {
+    "Id": 5,
+    "name": "HealthFirst Medical",
+    "industry": "Healthcare",
+    "size": "11-50",
+    "location": "Boston, MA",
+    "website": "https://healthfirst.med",
+    "relationshipStage": "Prospect",
+    "description": "Healthcare technology company developing patient management systems.",
+    "contactCount": 1,
+    "createdAt": "2024-01-25T14:20:00Z",
+    "updatedAt": "2024-01-25T14:20:00Z"
+  }
+]

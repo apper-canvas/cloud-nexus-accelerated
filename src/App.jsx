@@ -11,7 +11,10 @@ import ContactDetail from "@/components/pages/ContactDetail";
 import AddContact from "@/components/pages/AddContact";
 import EditContact from "@/components/pages/EditContact";
 import ComingSoon from "@/components/pages/ComingSoon";
-
+import Companies from "@/components/pages/Companies";
+import CompanyDetail from "@/components/pages/CompanyDetail";
+import AddCompany from "@/components/pages/AddCompany";
+import EditCompany from "@/components/pages/EditCompany";
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -46,19 +49,21 @@ function App() {
                   <Route path="/contacts/:id" element={<ContactDetail />} />
                   <Route path="/contacts/:id/edit" element={<EditContact />} />
                   <Route 
-                    path="/companies" 
-                    element={
-                      <ComingSoon 
-                        title="Companies"
-                        description="Manage company profiles and link contacts to organizations."
-                        icon="Building"
-                        breadcrumbs={[
-                          { label: "Dashboard", href: "/" },
-                          { label: "Companies" }
-                        ]}
-                      />
-                    } 
-                  />
+path="/companies" 
+                  element={<Companies />}
+                />
+                <Route 
+                  path="/companies/new" 
+                  element={<AddCompany />}
+                />
+                <Route 
+                  path="/companies/:id" 
+                  element={<CompanyDetail />}
+                />
+                <Route 
+                  path="/companies/:id/edit" 
+                  element={<EditCompany />}
+                />
                   <Route 
                     path="/leads" 
                     element={
