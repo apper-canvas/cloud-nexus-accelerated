@@ -206,8 +206,8 @@ const filteredLeads = leads.filter(lead => {
                     <div className="text-sm text-gray-500">{lead.title}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Badge className={getStatusColor(lead.status)}>
-                      {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
+<Badge className={getStatusColor(lead.status_c || 'unknown')}>
+                      {(lead.status_c || 'Unknown').charAt(0).toUpperCase() + (lead.status_c || 'Unknown').slice(1)}
                     </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
