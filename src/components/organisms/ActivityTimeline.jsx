@@ -105,9 +105,12 @@ const isExpanded = expandedActivities.has(activity.Id || activity.id || activity
                       {activity.description}
                     </p>
 
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
+<div className="flex items-center gap-4 text-xs text-gray-500">
                       <span>
-                        {format(new Date(activity.date), 'MMM dd, yyyy • h:mm a')}
+                        {activity.date && !isNaN(new Date(activity.date).getTime()) 
+                          ? format(new Date(activity.date), 'MMM dd, yyyy • h:mm a')
+                          : 'Invalid date'
+                        }
                       </span>
                       {activity.duration && (
                         <span>• {activity.duration} minutes</span>
