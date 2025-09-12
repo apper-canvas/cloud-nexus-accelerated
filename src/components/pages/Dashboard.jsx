@@ -7,7 +7,6 @@ import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 
 const Dashboard = () => {
-const Dashboard = () => {
 const [contacts, setContacts] = useState([]);
   const [reportKpis, setReportKpis] = useState({});
   const [loading, setLoading] = useState(true);
