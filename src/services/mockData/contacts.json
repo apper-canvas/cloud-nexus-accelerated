@@ -1,0 +1,98 @@
+[
+  {
+    "Id": 1,
+    "name": "John Smith",
+    "email": "john.smith@techcorp.com",
+    "phone": "+1 (555) 123-4567",
+    "position": "Senior Developer",
+    "company": "TechCorp Solutions",
+    "address": "123 Main St, San Francisco, CA 94105",
+    "notes": "Interested in enterprise solutions. Follow up in Q2.",
+    "createdAt": "2024-01-10T10:30:00Z",
+    "updatedAt": "2024-01-10T10:30:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "Sarah Johnson",
+    "email": "sarah.j@innovate.io",
+    "phone": "+1 (555) 234-5678",
+    "position": "Product Manager",
+    "company": "InnovateTech",
+    "address": "456 Oak Ave, Austin, TX 78701",
+    "notes": "Looking for SaaS integrations. High priority lead.",
+    "createdAt": "2024-01-08T14:15:00Z",
+    "updatedAt": "2024-01-12T09:45:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "Michael Chen",
+    "email": "m.chen@digitalflow.com",
+    "phone": "+1 (555) 345-6789",
+    "position": "CTO",
+    "company": "DigitalFlow Systems",
+    "address": "789 Pine St, Seattle, WA 98101",
+    "notes": "Evaluating multiple vendors. Decision timeline: 6 weeks.",
+    "createdAt": "2024-01-05T16:20:00Z",
+    "updatedAt": "2024-01-09T11:30:00Z"
+  },
+  {
+    "Id": 4,
+    "name": "Emily Rodriguez",
+    "email": "emily.r@cloudventures.net",
+    "phone": "+1 (555) 456-7890",
+    "position": "VP of Engineering",
+    "company": "CloudVentures",
+    "address": "321 Cedar Blvd, Denver, CO 80202",
+    "notes": "Requires custom API development. Budget approved for Q1.",
+    "createdAt": "2024-01-03T13:45:00Z",
+    "updatedAt": "2024-01-11T15:20:00Z"
+  },
+  {
+    "Id": 5,
+    "name": "David Wilson",
+    "email": "david.wilson@nexusdata.org",
+    "phone": "+1 (555) 567-8901",
+    "position": "Data Analyst",
+    "company": "NexusData Analytics",
+    "address": "654 Elm Dr, Boston, MA 02101",
+    "notes": "Small startup, budget constraints. Good for pilot program.",
+    "createdAt": "2024-01-01T12:00:00Z",
+    "updatedAt": "2024-01-07T10:15:00Z"
+  },
+  {
+    "Id": 6,
+    "name": "Lisa Thompson",
+    "email": "lisa.t@futureworks.biz",
+    "phone": "+1 (555) 678-9012",
+    "position": "Operations Director",
+    "company": "FutureWorks Industries",
+    "address": "987 Maple Ln, Chicago, IL 60601",
+    "notes": "Expanding team rapidly. Needs scalable solution.",
+    "createdAt": "2023-12-28T08:30:00Z",
+    "updatedAt": "2024-01-04T14:45:00Z"
+  },
+  {
+    "Id": 7,
+    "name": "Robert Kim",
+    "email": "robert.kim@alphatech.co",
+    "phone": "+1 (555) 789-0123",
+    "position": "Software Architect",
+    "company": "AlphaTech Corporation",
+    "address": "147 Birch St, Phoenix, AZ 85001",
+    "notes": "Technical decision maker. Prefers on-premise solutions.",
+    "createdAt": "2023-12-25T17:10:00Z",
+    "updatedAt": "2024-01-02T16:35:00Z"
+  },
+  {
+    "Id": 8,
+    "name": "Jennifer Adams",
+    "email": "j.adams@smartsolutions.net",
+    "phone": "+1 (555) 890-1234",
+    "position": "Business Analyst",
+    "company": "SmartSolutions Group",
+    "address": "258 Spruce Ave, Miami, FL 33101",
+    "notes": "Referred by existing client. High conversion probability.",
+    "createdAt": "2023-12-22T11:25:00Z",
+    "updatedAt": "2024-01-06T13:50:00Z"
+  }
+]

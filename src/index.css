@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('react-toastify/dist/ReactToastify.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.Toastify__toast-container {
+  top: 5rem;
+  right: 1rem;
+  width: 350px;
+}
+
+.Toastify__toast {
+  background: white;
+  color: #1f2937;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e5e7eb;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+}
+
+.Toastify__progress-bar {
+  background: #2563eb;
+}
+
+.Toastify__close-button {
+  color: #6b7280;
+}
