@@ -13,12 +13,12 @@ const LeadList = ({ leads, onDeleteLead, onStatusChange }) => {
   const [sortField, setSortField] = useState("createdAt");
   const [sortDirection, setSortDirection] = useState("desc");
 
-  const filteredLeads = leads.filter(lead => {
+const filteredLeads = leads.filter(lead => {
     const matchesSearch = 
-      lead.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.company.toLowerCase().includes(searchTerm.toLowerCase());
+      (lead.firstName ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (lead.lastName ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (lead.email ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (lead.company ?? '').toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = !statusFilter || lead.status === statusFilter;
     const matchesSource = !sourceFilter || lead.source === sourceFilter;
