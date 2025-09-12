@@ -91,18 +91,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-200">
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-            <ApperIcon name="User" className="h-4 w-4 text-gray-600" />
-          </div>
-          <div className="ml-3">
-            <p className="text-sm font-medium text-gray-900">Sales Team</p>
-            <p className="text-xs text-gray-500">Administrator</p>
-          </div>
-        </div>
-      </div>
-    </div>
+</div>
   );
 
   return (

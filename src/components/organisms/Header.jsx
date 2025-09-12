@@ -22,15 +22,16 @@ const Header = ({ onMenuClick, title = "Dashboard" }) => {
           </h1>
         </div>
 
-        <div className="flex items-center space-x-4">
+<div className="flex items-center space-x-4">
           <Button variant="ghost" size="sm">
             <ApperIcon name="Search" className="h-5 w-5" />
           </Button>
           <Button variant="ghost" size="sm">
             <ApperIcon name="Bell" className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="sm">
-            <ApperIcon name="Settings" className="h-5 w-5" />
+          <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+            <ApperIcon name="User" className="h-5 w-5" />
+            <span className="text-sm font-medium">Sales Team</span>
           </Button>
         </div>
       </div>
