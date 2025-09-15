@@ -28,7 +28,7 @@ class InvoiceService {
           {"field": {"Name": "company_id_c"}},
           {"field": {"Name": "company_name_c"}},
           {"field": {"Name": "issue_date_c"}},
-          {"field": {"Name": "due_date_c"}},
+{"field": {"Name": "due_date_c"}},
           {"field": {"Name": "status_c"}},
           {"field": {"Name": "subtotal_c"}},
           {"field": {"Name": "tax_rate_c"}},
@@ -37,7 +37,11 @@ class InvoiceService {
           {"field": {"Name": "paid_amount_c"}},
           {"field": {"Name": "outstanding_amount_c"}},
           {"field": {"Name": "payment_terms_c"}},
-          {"field": {"Name": "notes_c"}}
+          {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "item_service_name_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "tax_percent_c"}},
+          {"field": {"Name": "discount_percent_c"}}
         ],
         orderBy: [{"fieldName": "Id", "sorttype": "DESC"}],
         pagingInfo: {"limit": 100, "offset": 0}
@@ -69,7 +73,7 @@ class InvoiceService {
           {"field": {"Name": "invoice_number_c"}},
           {"field": {"Name": "company_id_c"}},
           {"field": {"Name": "company_name_c"}},
-          {"field": {"Name": "issue_date_c"}},
+{"field": {"Name": "issue_date_c"}},
           {"field": {"Name": "due_date_c"}},
           {"field": {"Name": "status_c"}},
           {"field": {"Name": "subtotal_c"}},
@@ -79,7 +83,11 @@ class InvoiceService {
           {"field": {"Name": "paid_amount_c"}},
           {"field": {"Name": "outstanding_amount_c"}},
           {"field": {"Name": "payment_terms_c"}},
-          {"field": {"Name": "notes_c"}}
+          {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "item_service_name_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "tax_percent_c"}},
+          {"field": {"Name": "discount_percent_c"}}
         ]
       };
 
@@ -102,7 +110,7 @@ class InvoiceService {
       if (!this.apperClient) this.initializeClient();
 
       const params = {
-        records: [{
+records: [{
           Name: invoiceData.invoice_number_c || this.generateInvoiceNumber(),
           Tags: invoiceData.Tags || "",
           invoice_number_c: invoiceData.invoice_number_c || this.generateInvoiceNumber(),
@@ -118,7 +126,11 @@ class InvoiceService {
           paid_amount_c: 0.00,
           outstanding_amount_c: invoiceData.total_c || invoiceData.total,
           payment_terms_c: invoiceData.payment_terms_c || invoiceData.paymentTerms,
-          notes_c: invoiceData.notes_c || invoiceData.notes
+          notes_c: invoiceData.notes_c || invoiceData.notes,
+          item_service_name_c: invoiceData.item_service_name_c || "",
+          description_c: invoiceData.description_c || "",
+          tax_percent_c: invoiceData.tax_percent_c || 0,
+          discount_percent_c: invoiceData.discount_percent_c || 0
         }]
       };
 
@@ -151,7 +163,7 @@ class InvoiceService {
 
       const params = {
         records: [{
-          Id: id,
+Id: id,
           Name: invoiceData.invoice_number_c || invoiceData.invoiceNumber,
           Tags: invoiceData.Tags || "",
           invoice_number_c: invoiceData.invoice_number_c || invoiceData.invoiceNumber,
@@ -167,7 +179,11 @@ class InvoiceService {
           paid_amount_c: invoiceData.paid_amount_c || invoiceData.paidAmount,
           outstanding_amount_c: invoiceData.outstanding_amount_c || invoiceData.outstandingAmount,
           payment_terms_c: invoiceData.payment_terms_c || invoiceData.paymentTerms,
-          notes_c: invoiceData.notes_c || invoiceData.notes
+          notes_c: invoiceData.notes_c || invoiceData.notes,
+          item_service_name_c: invoiceData.item_service_name_c || "",
+          description_c: invoiceData.description_c || "",
+          tax_percent_c: invoiceData.tax_percent_c || 0,
+          discount_percent_c: invoiceData.discount_percent_c || 0
         }]
       };
 
