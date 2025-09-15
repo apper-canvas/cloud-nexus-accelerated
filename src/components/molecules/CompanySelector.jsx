@@ -20,22 +20,22 @@ const CompanySelector = ({ value, onChange, error, required = false, placeholder
     loadCompanies();
   }, []);
 
-  const handleChange = (e) => {
+const handleChange = (e) => {
     const selectedValue = e.target.value;
+    if (!selectedValue) {
+      onChange(null);
+      return;
+    }
+    
     const selectedCompany = companies.find(c => c.value === parseInt(selectedValue));
-    onChange({
-      target: {
-        name: 'company',
-        value: selectedCompany ? selectedCompany.label : ''
-      }
-    });
+    if (selectedCompany) {
+      onChange(selectedCompany);
+    }
   };
-
-  const selectedCompany = companies.find(c => c.label === value);
 
   return (
     <select
-      value={selectedCompany ? selectedCompany.value : ''}
+      value={value?.value || ''}
       onChange={handleChange}
       disabled={loading}
       className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary ${
