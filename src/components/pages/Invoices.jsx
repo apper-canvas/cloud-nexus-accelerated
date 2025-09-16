@@ -184,11 +184,11 @@ const filteredInvoices = invoices.filter(invoice => {
                   </td>
                   <td className="py-4 px-4 text-gray-600">{invoice.issueDate}</td>
                   <td className="py-4 px-4 text-gray-600">{invoice.dueDate}</td>
-                  <td className="py-4 px-4">
-                    <div className="font-medium text-gray-900">${invoice.total.toLocaleString()}</div>
-                    {invoice.outstandingAmount > 0 && (
+<td className="py-4 px-4">
+                    <div className="font-medium text-gray-900">${(invoice.total ?? 0).toLocaleString()}</div>
+                    {(invoice.outstandingAmount ?? 0) > 0 && (
                       <div className="text-sm text-red-600">
-                        Outstanding: ${invoice.outstandingAmount.toLocaleString()}
+                        Outstanding: ${(invoice.outstandingAmount ?? 0).toLocaleString()}
                       </div>
                     )}
                   </td>
