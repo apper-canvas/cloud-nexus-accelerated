@@ -67,9 +67,9 @@ const Invoices = () => {
     }
   };
 
-  const filteredInvoices = invoices.filter(invoice => {
-    const matchesSearch = invoice.companyName.toLowerCase().includes(filter.toLowerCase()) ||
-                         invoice.invoiceNumber.toLowerCase().includes(filter.toLowerCase());
+const filteredInvoices = invoices.filter(invoice => {
+    const matchesSearch = (invoice.companyName || '').toLowerCase().includes(filter.toLowerCase()) ||
+                         (invoice.invoiceNumber || '').toLowerCase().includes(filter.toLowerCase());
     const matchesStatus = statusFilter === 'All' || invoice.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
