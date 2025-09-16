@@ -23,8 +23,8 @@ const CreateInvoice = () => {
     paymentTerms: 'Net 30',
     taxRate: 0.10,
     notes: '',
-lineItems: [
-      { Id: 1, itemServiceName: '', description: '', quantity: 1, rate: 0, amount: 0, tax: 0, discount: 0 }
+    lineItems: [
+      { Id: 1, description: '', quantity: 1, rate: 0, amount: 0 }
     ]
   });
 
@@ -63,26 +63,22 @@ lineItems: [
     }));
   };
 
-const handleLineItemChange = (index, field, value) => {
+  const handleLineItemChange = (index, field, value) => {
     const updatedItems = [...formData.lineItems];
     updatedItems[index] = { ...updatedItems[index], [field]: value };
     
-    if (field === 'quantity' || field === 'rate' || field === 'tax' || field === 'discount') {
-      const baseAmount = updatedItems[index].quantity * updatedItems[index].rate;
-      const discountAmount = baseAmount * (updatedItems[index].discount || 0) / 100;
-      const discountedAmount = baseAmount - discountAmount;
-      const taxAmount = discountedAmount * (updatedItems[index].tax || 0) / 100;
-      updatedItems[index].amount = discountedAmount + taxAmount;
+    if (field === 'quantity' || field === 'rate') {
+      updatedItems[index].amount = updatedItems[index].quantity * updatedItems[index].rate;
     }
 
     setFormData(prev => ({ ...prev, lineItems: updatedItems }));
   };
 
-const addLineItem = () => {
+  const addLineItem = () => {
     const newId = Math.max(...formData.lineItems.map(item => item.Id), 0) + 1;
     setFormData(prev => ({
       ...prev,
-      lineItems: [...prev.lineItems, { Id: newId, itemServiceName: '', description: '', quantity: 1, rate: 0, amount: 0, tax: 0, discount: 0 }]
+      lineItems: [...prev.lineItems, { Id: newId, description: '', quantity: 1, rate: 0, amount: 0 }]
     }));
   };
 
@@ -101,22 +97,17 @@ const addLineItem = () => {
       return;
     }
 
-if (formData.lineItems.some(item => !item.itemServiceName || !item.description || item.quantity <= 0 || item.rate <= 0)) {
-      toast.error('Please fill in all line item details including Item/Service Name');
+    if (formData.lineItems.some(item => !item.description || item.quantity <= 0 || item.rate <= 0)) {
+      toast.error('Please fill in all line item details');
       return;
     }
 
     try {
-setLoading(true);
+      setLoading(true);
       const invoiceData = {
         ...formData,
         ...totals,
-        status: isDraft ? 'Draft' : 'Sent',
-        // Map line item fields to database fields
-        item_service_name_c: formData.lineItems.map(item => item.itemServiceName).join(', '),
-        description_c: formData.lineItems.map(item => item.description).join('; '),
-        tax_percent_c: formData.lineItems.length > 0 ? formData.lineItems[0].tax : 0,
-        discount_percent_c: formData.lineItems.length > 0 ? formData.lineItems[0].discount : 0
+        status: isDraft ? 'Draft' : 'Sent'
       };
 
       const newInvoice = await invoiceService.create(invoiceData);
@@ -249,7 +240,7 @@ setLoading(true);
           </div>
         )}
 
-{step === 2 && (
+        {step === 2 && (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold text-gray-900">Line Items</h3>
@@ -263,13 +254,10 @@ setLoading(true);
               <table className="w-full">
                 <thead className="border-b border-gray-200">
                   <tr>
-                    <th className="text-left py-3 px-2 font-semibold text-gray-900">Item/Service Name</th>
                     <th className="text-left py-3 px-2 font-semibold text-gray-900">Description</th>
-                    <th className="text-left py-3 px-2 font-semibold text-gray-900 w-20">Qty</th>
-                    <th className="text-left py-3 px-2 font-semibold text-gray-900 w-24">Rate</th>
-                    <th className="text-left py-3 px-2 font-semibold text-gray-900 w-20">Tax %</th>
-                    <th className="text-left py-3 px-2 font-semibold text-gray-900 w-24">Discount %</th>
-                    <th className="text-left py-3 px-2 font-semibold text-gray-900 w-24">Amount</th>
+                    <th className="text-left py-3 px-2 font-semibold text-gray-900 w-24">Qty</th>
+                    <th className="text-left py-3 px-2 font-semibold text-gray-900 w-32">Rate</th>
+                    <th className="text-left py-3 px-2 font-semibold text-gray-900 w-32">Amount</th>
                     <th className="text-left py-3 px-2 font-semibold text-gray-900 w-16"></th>
                   </tr>
                 </thead>
@@ -279,18 +267,9 @@ setLoading(true);
                       <td className="py-3 px-2">
                         <Input
                           type="text"
-                          value={item.itemServiceName}
-                          onChange={(e) => handleLineItemChange(index, 'itemServiceName', e.target.value)}
-                          placeholder="Item or service name..."
-                          className="w-full"
-                        />
-                      </td>
-                      <td className="py-3 px-2">
-                        <Input
-                          type="text"
                           value={item.description}
                           onChange={(e) => handleLineItemChange(index, 'description', e.target.value)}
-                          placeholder="Description..."
+                          placeholder="Description of work or product..."
                           className="w-full"
                         />
                       </td>
@@ -311,28 +290,6 @@ setLoading(true);
                           step="0.01"
                           value={item.rate}
                           onChange={(e) => handleLineItemChange(index, 'rate', parseFloat(e.target.value) || 0)}
-                          className="w-full"
-                        />
-                      </td>
-                      <td className="py-3 px-2">
-                        <Input
-                          type="number"
-                          min="0"
-                          max="100"
-                          step="0.01"
-                          value={item.tax}
-                          onChange={(e) => handleLineItemChange(index, 'tax', parseFloat(e.target.value) || 0)}
-                          className="w-full"
-                        />
-                      </td>
-                      <td className="py-3 px-2">
-                        <Input
-                          type="number"
-                          min="0"
-                          max="100"
-                          step="0.01"
-                          value={item.discount}
-                          onChange={(e) => handleLineItemChange(index, 'discount', parseFloat(e.target.value) || 0)}
                           className="w-full"
                         />
                       </td>
@@ -405,23 +362,13 @@ setLoading(true);
               </div>
 
               <div>
-<div className="bg-gray-50 rounded-lg p-6">
+                <div className="bg-gray-50 rounded-lg p-6">
                   <h4 className="font-semibold text-gray-900 mb-4">Line Items</h4>
                   <div className="space-y-2 text-sm">
                     {formData.lineItems.map((item, index) => (
-                      <div key={item.Id} className="border-b border-gray-200 pb-2">
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <div className="font-medium text-gray-900">{item.itemServiceName}</div>
-                            <div className="text-gray-600 text-xs">{item.description}</div>
-                            <div className="text-gray-500 text-xs">
-                              Qty: {item.quantity} × ${item.rate.toFixed(2)}
-                              {item.tax > 0 && ` • Tax: ${item.tax}%`}
-                              {item.discount > 0 && ` • Discount: ${item.discount}%`}
-                            </div>
-                          </div>
-                          <span className="font-medium">${item.amount.toFixed(2)}</span>
-                        </div>
+                      <div key={item.Id} className="flex justify-between">
+                        <span className="text-gray-700">{item.description} ({item.quantity}x)</span>
+                        <span className="font-medium">${item.amount.toFixed(2)}</span>
                       </div>
                     ))}
                   </div>

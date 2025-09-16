@@ -166,17 +166,15 @@ const handleChange = (e) => {
 
 <FormField
             label="Company"
+            name="company"
+            value={formData.company}
+            onChange={handleChange}
             error={errors.company}
             required
           >
             <CompanySelector
               value={formData.company}
-              onChange={(company) => {
-                setFormData(prev => ({
-                  ...prev,
-                  company: company
-                }));
-              }}
+              onChange={handleChange}
               error={errors.company}
               required
               placeholder="Select company"
