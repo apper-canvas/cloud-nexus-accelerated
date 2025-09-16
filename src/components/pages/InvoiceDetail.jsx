@@ -148,10 +148,10 @@ const InvoiceDetail = () => {
                 <p className="text-sm text-gray-600">Issue Date: {invoice.issueDate}</p>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-gray-900">${invoice.total.toLocaleString()}</div>
-                {invoice.outstandingAmount > 0 && (
+<div className="text-2xl font-bold text-gray-900">${(invoice.total ?? 0).toLocaleString()}</div>
+                {(invoice.outstandingAmount ?? 0) > 0 && (
                   <div className="text-sm text-red-600">
-                    Outstanding: ${invoice.outstandingAmount.toLocaleString()}
+                    Outstanding: ${(invoice.outstandingAmount ?? 0).toLocaleString()}
                   </div>
                 )}
               </div>
