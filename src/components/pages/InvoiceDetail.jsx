@@ -182,7 +182,7 @@ const InvoiceDetail = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {invoice.lineItems.map(item => (
+{(invoice.lineItems ?? []).map(item => (
                       <tr key={item.Id} className="border-b border-gray-100">
                         <td className="py-3 text-gray-900">{item.description}</td>
                         <td className="py-3 text-right text-gray-700">{item.quantity}</td>
